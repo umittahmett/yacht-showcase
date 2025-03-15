@@ -18,6 +18,7 @@ import { createClient } from "@/utils/supabase/client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { sidebarNavigation } from "@/lib/constants/navigation";
+import Link from "next/link";
 
 export function AppSidebar() {
   const [user, setUser] = useState<any>();
@@ -33,7 +34,9 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <Image className="w-[80%]" src={Logo} alt="Denizdebirhafta Logo" />
+        <Link href="/">
+          <Image className="w-[80%]" src={Logo} alt="Denizdebirhafta Logo" />
+        </Link>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup className="h-full pb-4">
