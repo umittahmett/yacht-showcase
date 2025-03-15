@@ -1,3 +1,5 @@
+import { AppSidebar } from "@/components/navigation/app-sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Provider as JotaiProvider } from "jotai";
 
 export default function RootLayout({
@@ -7,7 +9,15 @@ export default function RootLayout({
 }>) {
   return (
     <div>
-      <JotaiProvider>{children}</JotaiProvider>
+      <JotaiProvider>
+        <SidebarProvider>
+          <AppSidebar />
+          <main>
+            <SidebarTrigger />
+            {children}
+          </main>
+        </SidebarProvider>
+      </JotaiProvider>
     </div>
   );
 }
