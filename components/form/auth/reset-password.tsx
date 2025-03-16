@@ -25,9 +25,7 @@ const ResetPasswordForm = () => {
 
   const onSubmit = (data: any) => {
     const formData = new FormData();
-    Object.keys(data).forEach((key) => {
-      formData.append(key, data[key as keyof typeof data]);
-    });
+    formData.append("password", data.password);
 
     resetPassword(formData);
   };
