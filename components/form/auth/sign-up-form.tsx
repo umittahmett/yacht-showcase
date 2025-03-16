@@ -4,7 +4,7 @@ import { PasswordInput } from "../../ui/password-input";
 import { Button } from "../../ui/button";
 import { signup } from "@/app/auth/sign-up/actions";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -26,13 +26,18 @@ const SignUpForm = () => {
     },
   });
 
-  const onSubmit = (data: any) => {
-    const formData = new FormData();
-    Object.keys(data).forEach((key) => {
-      formData.append(key, data[key as keyof typeof data]);
-    });
-
-    signup(formData);
+  const onSubmit: SubmitHandler<z.infer<typeof signUpSchema>> = async (
+    data
+  ) => {
+    try {
+      const formData = new FormData();
+      Object.keys(data).forEach((key) => {
+        formData.append(key, data[key as keyof typeof data]);
+      });
+      await signup(formData);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -77,7 +82,11 @@ const SignUpForm = () => {
             )}
           />
 
-          <Button type="submit" className="block">
+          <Button
+            disabled={form.formState.isSubmitting}
+            type="submit"
+            className="block"
+          >
             Sign up
           </Button>
         </form>

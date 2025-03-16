@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "../../ui/button";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -23,11 +23,16 @@ const ResetPasswordForm = () => {
     },
   });
 
-  const onSubmit = (data: any) => {
-    const formData = new FormData();
-    formData.append("password", data.password);
-
-    resetPassword(formData);
+  const onSubmit: SubmitHandler<z.infer<typeof resetPasswordSchema>> = async (
+    data
+  ) => {
+    try {
+      const formData = new FormData();
+      formData.append("password", data.password);
+      await resetPassword(formData);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -60,7 +65,11 @@ const ResetPasswordForm = () => {
             )}
           />
 
-          <Button type="submit" className="block">
+          <Button
+            disabled={form.formState.isSubmitting}
+            type="submit"
+            className="block"
+          >
             Reset Password
           </Button>
         </div>

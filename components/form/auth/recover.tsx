@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "../../ui/button";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -23,13 +23,16 @@ const RecoverForm = () => {
     },
   });
 
-  const onSubmit = (data: any) => {
-    const formData = new FormData();
-    Object.keys(data).forEach((key) => {
-      formData.append(key, data[key as keyof typeof data]);
-    });
-
-    recover(formData);
+  const onSubmit: SubmitHandler<z.infer<typeof recoverSchema>> = async (
+    data
+  ) => {
+    try {
+      const formData = new FormData();
+      formData.append("email", data.email);
+      await recover(formData);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -60,7 +63,11 @@ const RecoverForm = () => {
             )}
           />
 
-          <Button type="submit" className="block">
+          <Button
+            disabled={form.formState.isSubmitting}
+            type="submit"
+            className="block"
+          >
             Recover
           </Button>
         </div>

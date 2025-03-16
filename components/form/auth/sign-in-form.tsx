@@ -3,7 +3,7 @@ import { Input } from "../../ui/input";
 import { PasswordInput } from "../../ui/password-input";
 import { Button } from "../../ui/button";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -26,13 +26,18 @@ const SignInForm = () => {
     },
   });
 
-  const onSubmit = (data: any) => {
-    const formData = new FormData();
-    Object.keys(data).forEach((key) => {
-      formData.append(key, data[key as keyof typeof data]);
-    });
-
-    signin(formData);
+  const onSubmit: SubmitHandler<z.infer<typeof signInSchema>> = async (
+    data
+  ) => {
+    try {
+      const formData = new FormData();
+      Object.keys(data).forEach((key) => {
+        formData.append(key, data[key as keyof typeof data]);
+      });
+      await signin(formData);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -87,11 +92,15 @@ const SignInForm = () => {
             </Link>
           </div>
 
-          <Button type="submit" className="block">
+          <Button
+            disabled={form.formState.isSubmitting}
+            type="submit"
+            className="block"
+          >
             Sign in
           </Button>
 
-          <p className="text-sm text-neutral-500">
+          <div className="text-sm text-neutral-500">
             Don't have an account
             <Link
               href="/auth/sign-up"
@@ -99,7 +108,7 @@ const SignInForm = () => {
             >
               Sign up here
             </Link>
-          </p>
+          </div>
         </div>
       </form>
     </Form>
