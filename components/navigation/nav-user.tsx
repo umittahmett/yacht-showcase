@@ -1,6 +1,4 @@
 "use client";
-import { logout } from "@/app/auth/logout/actions";
-
 import {
   BadgeCheck,
   Bell,
@@ -26,6 +24,7 @@ import {
   useSidebar,
 } from "@components/ui/sidebar";
 import { useRouter } from "next/navigation";
+import LogoutButton from "../ui/logout-button";
 
 export function NavUser({
   user,
@@ -92,9 +91,8 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={logout}>
-              <LogOut />
-              Log out
+            <DropdownMenuItem>
+              <LogoutButton />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

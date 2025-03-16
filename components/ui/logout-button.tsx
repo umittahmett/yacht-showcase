@@ -1,12 +1,17 @@
 import { logout } from "@/app/auth/logout/actions";
-import { Button } from "./button";
+import { LogOut } from "lucide-react";
 
 const LogoutButton = () => {
   return (
     <form>
-      <Button type="submit" formAction={logout}>
-        Logout
-      </Button>
+      <button
+        className="flex cursor-pointer items-center gap-2.5"
+        type="submit"
+        formAction={logout}
+      >
+        <LogOut />
+        Log out
+      </button>
     </form>
   );
 };

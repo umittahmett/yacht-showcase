@@ -22,9 +22,9 @@ import Link from "next/link";
 
 export function AppSidebar() {
   const [user, setUser] = useState<any>();
-  const supabase = createClient();
 
   useEffect(() => {
+    const supabase = createClient();
     supabase.auth.getUser().then((res) => {
       setUser(res.data.user);
       console.log(res.data.user?.email);
