@@ -11,11 +11,11 @@ export async function resetPassword(formData: FormData) {
   // type-casting here for convenience
   // in practice, you should validate your inputs
   const data = {
-    new_password: formData.get('new_password') as string,
+    password: formData.get('password') as string,
   }
 
   const { error } = await supabase.auth.updateUser({
-    password: data.new_password,
+    password: data.password,
   })
 
   if (error) {
