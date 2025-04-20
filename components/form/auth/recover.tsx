@@ -11,7 +11,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../../ui/form";
-import { recoverSchema } from "@/lib/validation/form-schemas";
+import { recoverSchema } from "@/lib/validation/schemas/form-schemas";
 import { recover } from "@/app/auth/recover/actions";
 import { Input } from "@/components/ui/input";
 

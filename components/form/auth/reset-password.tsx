@@ -11,7 +11,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../../ui/form";
-import { resetPasswordSchema } from "@/lib/validation/form-schemas";
+import { resetPasswordSchema } from "@/lib/validation/schemas/form-schemas";
 import { PasswordInput } from "../../ui/password-input";
 import { resetPassword } from "@/app/auth/reset-password/actions";
 

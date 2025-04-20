@@ -14,7 +14,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../../ui/form";
-import { signUpSchema } from "@/lib/validation/form-schemas";
+import { signUpSchema } from "@/lib/validation/schemas/form-schemas";
 import Link from "next/link";
 
 const SignUpForm = () => {

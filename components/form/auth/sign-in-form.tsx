@@ -13,7 +13,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../../ui/form";
-import { signInSchema } from "@/lib/validation/form-schemas";
+import { signInSchema } from "@/lib/validation/schemas/form-schemas";
 import { signin } from "@/app/auth/sign-in/actions";
 import Link from "next/link";
 
