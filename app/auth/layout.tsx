@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import WavesBackground from "@assets/images/waves-background.jpg";
+import WavesBackground from "@assets/images/waves-background.webp";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useEffect } from "react";
@@ -53,7 +53,7 @@ export default function AuthLayout({
 
       {/* Background */}
       <Image
-        className="size-full absolute inset-0 opacity-40"
+        className="size-full absolute inset-0"
         src={WavesBackground}
         alt="auth-background"
       />
