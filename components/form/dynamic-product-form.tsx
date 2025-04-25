@@ -76,14 +76,21 @@ export const DynamicForm = ({ groups }: any) => {
     const schema = buildSchemaFromFields(groups);
     setSchema(schema);
     setDefaultValues(generateDefaultValues(groups));
+    console.log(generateDefaultValues(groups));
     setFieldGroups(groups);
     setIsFormReady(true);
   }, [groups]);
 
   const form = useForm({
     resolver: schema ? zodResolver(schema) : undefined,
-    defaultValues: {},
+    defaultValues: defaultValues,
   });
+
+  useEffect(() => {
+    if (schema) {
+      form.reset(defaultValues);
+    }
+  }, [schema, defaultValues, form]);
 
   if (!isFormReady) return null;
 
