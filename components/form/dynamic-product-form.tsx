@@ -15,26 +15,31 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { snakeCaseToText } from "@/utils/camel-case-to-text";
+import { snakeCaseToText } from "@/utils/snake-case-to-text";
 import { Switch } from "@/components/ui/switch";
 import clsx from "clsx";
+import { toSnakeCase } from "@/utils/text-to-snake-case";
 
 const buildSchemaFromFields = (groups: any[]) => {
   const shape: Record<string, any> = {};
 
   groups.forEach((group) => {
+    const groupShape: Record<string, any> = {};
+
     group.fields.forEach((field: any) => {
       const { field_name, field_type, required } = field;
       let base = field_type === "toggle" ? z.boolean() : z.string();
       if (required) {
-        shape[field_name] =
+        groupShape[field_name] =
           field_type === "toggle"
             ? base
             : (base as z.ZodString).min(1, `${field_name} zorunlu`);
       } else {
-        shape[field_name] = base.optional();
+        groupShape[field_name] = base.optional();
       }
     });
+
+    shape[toSnakeCase(group.title)] = z.object(groupShape);
   });
 
   return z.object(shape);
@@ -44,19 +49,20 @@ const generateDefaultValues = (groups: any[]) => {
   const defaults: Record<string, any> = {};
 
   groups.forEach((group) => {
+    defaults[toSnakeCase(group.title)] = {};
     group.fields.forEach((field: any) => {
       const { field_name, field_type } = field;
-
       if (field_type === "toggle" || field_type === "checkbox") {
-        defaults[field_name] = false;
+        defaults[toSnakeCase(group.title)][field_name] = false;
       } else {
-        defaults[field_name] = "";
+        defaults[toSnakeCase(group.title)][field_name] = "";
       }
     });
   });
 
   return defaults;
 };
+
 
 export const DynamicForm = ({ groups }: any) => {
   const [fieldGroups, setFieldGroups] = useState<any[]>([]);
@@ -74,9 +80,10 @@ export const DynamicForm = ({ groups }: any) => {
 
   useEffect(() => {
     const schema = buildSchemaFromFields(groups);
+    console.log('generated');
+    
     setSchema(schema);
     setDefaultValues(generateDefaultValues(groups));
-    console.log(generateDefaultValues(groups));
     setFieldGroups(groups);
     setIsFormReady(true);
   }, [groups]);
@@ -114,7 +121,7 @@ export const DynamicForm = ({ groups }: any) => {
                   <FormField
                     key={index}
                     control={form.control}
-                    name={formField.field_name}
+                    name={`${toSnakeCase(group.title)}.${formField.field_name}`}
                     render={({ field }) => (
                       <FormItem
                         className={clsx("text-base font-medium", {
@@ -131,7 +138,7 @@ export const DynamicForm = ({ groups }: any) => {
                               formField.field_type == "toggle",
                           })}
                         >
-                          {snakeCaseToText(formField.field_name)}
+                          {snakeCaseToText(formField.field_title)}
                         </FormLabel>
                         <FormControl
                           className={clsx({
@@ -170,10 +177,7 @@ export const DynamicForm = ({ groups }: any) => {
                           ) : (
                             <Input
                               type={formField.type}
-                              placeholder={field.name
-                                .split(".")
-                                .slice(1)
-                                .join(".")}
+                              placeholder={formField.field_title}
                               {...field}
                               value={field.value || ""}
                             />
@@ -200,7 +204,24 @@ export const DynamicForm = ({ groups }: any) => {
             </Button>
           </div>
         </form>
+
+        
       </Form>
+
+      <div className="mt-4">
+        {Object.keys(form.formState.errors).length > 0 && (
+          <div className="text-red-500">
+            <h3 className="font-bold">Form Errors:</h3>
+            <ul className="list-disc list-inside">
+        {Object.entries(form.formState.errors).map(([key, error]) => (
+          <li key={key}>
+            {snakeCaseToText(key)}: {(error as any).message}
+          </li>
+        ))}
+            </ul>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
