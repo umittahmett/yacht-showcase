@@ -4,15 +4,49 @@ import { error } from "console";
 
 interface Group {
   title: string;
-  fields: {
-    name: string;
-    field_name: string;
-    field_type: string;
-    required: boolean;
-    localizable: boolean;
-    language_code: string;
-    created_at: string;
-  }[];
+  group_language_code?:string;
+  fields: GroupField[]
+}
+
+interface GroupField {
+  id: number;
+  field_title?:string;
+  field_language_code?:string
+  name: string;
+  field_name: string;
+  field_type: string;
+  required: boolean;
+  localizable: boolean;
+  language_code: string;
+  created_at: string;
+}
+
+interface GroupTranslationField {
+  id: number;
+  feature_id: number;
+  name: string;
+  language_code: string;
+  created_at: string;
+}
+
+interface Language {
+  id: number;
+  code: string;
+  name: string;
+  created_at: string;
+}
+
+interface FeatureTranslation {
+  id: number;
+  feature_name: string;
+  name: string;
+  language_code: string;
+  created_at: string
+}
+
+interface GroupTranslation {
+  title: string;
+  fields: GroupTranslationField[]
 }
 
 export default async function ProductFormWrapper() {
@@ -41,7 +75,7 @@ export default async function ProductFormWrapper() {
     })
   )) as Group[];
   
-  let groups_translations = await Promise.all(
+  const groups_translations:GroupTranslation[] = (await Promise.all(
     groupNames.map(async (groupName) => {
       const {data, error} = await supabase.from(`${groupName}_translations`).select("*");
 
@@ -54,11 +88,9 @@ export default async function ProductFormWrapper() {
         fields: data,
       };
     })
-  );
-
-
+  )) as GroupTranslation[];
   
-  const features_translations:any = await 
+  const features_translations:FeatureTranslation[] = await 
   supabase.from(`features_translations`).select("*").then(response => {
     if (response.error) {
       console.error("Error fetching fields:", error);
@@ -67,37 +99,46 @@ export default async function ProductFormWrapper() {
     return response.data;
   })
 
-  const translatedGroups = groups.map((group:any) => {
-    const translationGroup:any = groups_translations.find((transGroup:any) => 
-      transGroup.title === group.title
-    );
+  const languages:Language[] = await 
+  supabase.from(`languages`).select("*").then(response => {
+    if (response.error) {
+      console.error("Error fetching fields:", error);
+      return [];
+    }
+    return response.data;
+  })
 
-    const translatedGroup = features_translations?.find((transGroup:any) => 
-      transGroup.feature_name === group.title && transGroup.language_code === "en"
-    );
-    
+  const translatedGroups = groups.map((group: Group) => {
+    const translationGroup = groups_translations.find(
+      (transGroup) => (transGroup as GroupTranslation).title === group.title
+    ) as GroupTranslation | undefined;
+
+    const translatedGroup = features_translations?.find(
+      (transGroup: FeatureTranslation) =>
+        transGroup.feature_name === group.title && transGroup.language_code === "en"
+    ) as FeatureTranslation | undefined;
+
     return {
-      title: translatedGroup.name,
-      group_language_code: translatedGroup.language_code,
-      fields: group.fields.map((field:any) => {
-
-        const translationField = translationGroup ? 
-          translationGroup.fields.find((transField:any) => 
-            transField.feature_id === field.id && transField.language_code === "en"
-          ) : null;
-        
+      title: translatedGroup?.name ?? group.title,
+      group_language_code: translatedGroup?.language_code ?? null,
+      fields: group.fields.map((field: GroupField) => {
+        const translationField =(
+          translationGroup && translationGroup.fields
+            ? translationGroup.fields.find(
+                (transField) =>{
+                  return (transField as GroupTranslationField).feature_id === field.id && transField.language_code === "en"
+                }
+              )
+            : null) as GroupTranslationField | undefined;
 
         return {
           ...field,
           field_title: translationField ? translationField.name : field.field_name,
-          field_language_code: translationField ? translationField.language_code : null
+          field_language_code: translationField ? translationField.language_code : null,
         };
-      })
+      }),
     };
   });
 
-  console.log("Translated Groups: ", translatedGroups);
-  
-
-  return <DynamicForm groups={translatedGroups} />;
+  return <DynamicForm languages={languages} groups={translatedGroups} />;
 }
