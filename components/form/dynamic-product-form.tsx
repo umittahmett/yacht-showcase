@@ -1,9 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
-import { z } from "zod";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import MDEditor from "@uiw/react-md-editor";
 import {
   Form,
   FormControl,
@@ -12,123 +10,120 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { snakeCaseToText } from "@/utils/snake-case-to-text";
-import { Switch } from "@/components/ui/switch";
 import clsx from "clsx";
 import { toSnakeCase } from "@/utils/text-to-snake-case";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle} from "../ui/alert-dialog";
+import { createProduct } from "@/app/dashboard/product/actions";
+import { productRenderFormControl } from "./product-render-form-control";
+import { buildSchemaFromFields, generateDefaultValues } from "@/lib/validation/schema-utils";
 
-const buildSchemaFromFields = (groups: any[]) => {
-  const shape: Record<string, any> = {};
+interface DynamicFormProps {
+  languages: any[]
+  groups: any[]
+}
 
-  groups.forEach((group) => {
-    const groupShape: Record<string, any> = {};
-
-    group.fields.forEach((field: any) => {
-      const { field_name, field_type, required } = field;
-      let base = field_type === "toggle" ? z.boolean() : z.string();
-      if (required) {
-        groupShape[field_name] =
-          field_type === "toggle"
-            ? base
-            : (base as z.ZodString).min(1, `${field_name} zorunlu`);
-      } else {
-        groupShape[field_name] = base.optional();
-      }
-    });
-
-    shape[toSnakeCase(group.title)] = z.object(groupShape);
+export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => {
+  const [isFormReady, setIsFormReady] = useState<boolean>(false);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(languages?.[0]?.code || '');
+  const [pendingLanguage, setPendingLanguage] = useState<string>('');
+  const [isSwitchLanguageAlertOpen, setIsSwitchLanguageAlertOpen] = useState(false);
+  const initialSchema = buildSchemaFromFields(groups);
+  const initialDefaultValues = generateDefaultValues(groups);
+  
+  const form = useForm({
+    resolver: zodResolver(initialSchema),
+    defaultValues: initialDefaultValues,
   });
 
-  return z.object(shape);
-};
+  useEffect(() => {
+    setIsFormReady(true);
+  }, []);
 
-const generateDefaultValues = (groups: any[]) => {
-  const defaults: Record<string, any> = {};
+  useEffect(() => {
+    if (isFormReady) {
+      form.reset(generateDefaultValues(groups));
+    }
+  }, [groups, isFormReady]);
 
-  groups.forEach((group) => {
-    defaults[toSnakeCase(group.title)] = {};
-    group.fields.forEach((field: any) => {
-      const { field_name, field_type } = field;
-      if (field_type === "toggle" || field_type === "checkbox") {
-        defaults[toSnakeCase(group.title)][field_name] = false;
+  useEffect(() => {
+    if (selectedLanguage && pendingLanguage && !isSwitchLanguageAlertOpen) {
+      if (form.formState.isDirty) {
+        setIsSwitchLanguageAlertOpen(true);
       } else {
-        defaults[toSnakeCase(group.title)][field_name] = "";
+        setSelectedLanguage(pendingLanguage);
+        setPendingLanguage('');
       }
-    });
-  });
+    }
+  }, [pendingLanguage, isSwitchLanguageAlertOpen, form.formState.isDirty, selectedLanguage]);
 
-  return defaults;
-};
-
-
-export const DynamicForm = ({ groups }: any) => {
-  const [fieldGroups, setFieldGroups] = useState<any[]>([]);
-  const [schema, setSchema] = useState<z.ZodSchema | null>(null);
-  const [defaultValues, setDefaultValues] = useState({});
-  const [isFormReady, setIsFormReady] = useState(false);
-
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data:any) => {
     try {
-      console.log(data);
+      const formData = new FormData();
+      formData.append("features", JSON.stringify(data));
+      formData.append("language", selectedLanguage);
+      await createProduct(formData);
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    const schema = buildSchemaFromFields(groups);
-    console.log('generated');
-    
-    setSchema(schema);
-    setDefaultValues(generateDefaultValues(groups));
-    setFieldGroups(groups);
-    setIsFormReady(true);
-  }, [groups]);
-
-  const form = useForm({
-    resolver: schema ? zodResolver(schema) : undefined,
-    defaultValues: defaultValues,
-  });
-
-  useEffect(() => {
-    if (schema) {
-      form.reset(defaultValues);
-    }
-  }, [schema, defaultValues, form]);
-
   if (!isFormReady) return null;
 
   return (
     <div className="relative w-full">
+      <Select 
+        onValueChange={(value:string)=>{
+          setPendingLanguage(value);
+        }} 
+        value={selectedLanguage}
+      >
+        <SelectTrigger className="ml-auto mt-4 w-[180px]">
+          <SelectValue placeholder="Language" />
+        </SelectTrigger>
+        <SelectContent>
+          {languages.map((lang) => (
+            <SelectItem
+              key={lang.id}
+              value={lang.code}
+            >
+              {lang.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
       <Form {...form}>
         <form
           className="z-10 *:my-10 w-full"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          {fieldGroups.map((group) => (
+          {groups.map((group) => (
             <div
-              className="border border-neutral-200 shadow-sm rounded-3xl relative bg-neutral-50 p-6 overflow-hidden lg:p-8"
+              className="border first:mt-4 border-neutral-200 shadow-sm rounded-lg relative bg-neutral-50 p-6 overflow-hidden lg:p-8"
               key={group.title}
             >
-              <h2 className="relative z-[1] text-3xl font-bold pb-6 text-neutral-900">
+              <h2 className="relative z-[1] text-lg font-bold pb-6 text-neutral-900">
                 {group.title}
               </h2>
+
               <div className="relative z-[1] space-y-3 border-t border-neutral-300 grid lg:grid-cols-2 gap-6 pt-6">
-                {group.fields.map((formField: any, index: number) => (
+              {group.fields.map((formField:any, index:number) => {
+                const fieldName = `${toSnakeCase(group.title)}.${formField.field_name}`;
+                const isFieldDisabled = formField.localizable === false && selectedLanguage !== languages[0]?.code;
+                const isCheckboxOrToggle = formField.field_type === "checkbox" || formField.field_type === "toggle";
+                
+                return (
                   <FormField
-                    key={index}
+                    key={`${fieldName}-${index}`}
                     control={form.control}
-                    name={`${toSnakeCase(group.title)}.${formField.field_name}`}
+                    name={fieldName}
                     render={({ field }) => (
                       <FormItem
                         className={clsx("text-base font-medium", {
-                          "flex items-center":
-                            formField.field_type == "checkbox" ||
-                            formField.field_type == "toggle",
-                          "col-span-2": formField.field_type == "markdown",
+                          "flex items-center": isCheckboxOrToggle,
+                          "col-span-2": formField.field_type === "markdown",
                         })}
                       >
                         <FormLabel
@@ -136,92 +131,70 @@ export const DynamicForm = ({ groups }: any) => {
                             "order-2":
                               formField.field_type == "checkbox" ||
                               formField.field_type == "toggle",
+                              'opacity-50 cursor-not-allowed': isFieldDisabled
                           })}
                         >
-                          {snakeCaseToText(formField.field_title)}
+                          {formField.field_title}
                         </FormLabel>
-                        <FormControl
-                          className={clsx({
-                            "order-1":
-                              formField.field_type == "checkbox" ||
-                              formField.field_type == "toggle",
-                          })}
-                        >
-                          {formField.field_type === "textarea" ? (
-                            <textarea
-                              {...field}
-                              value={field.value || ""}
-                              className="border px-2 py-1"
-                            />
-                          ) : formField.field_type === "markdown" ? (
-                            <div data-color-mode="light">
-                              <MDEditor
-                                className="!h-80"
-                                value={field.value || ""}
-                                onChange={field.onChange}
-                              />
-                            </div>
-                          ) : formField.field_type === "toggle" ? (
-                            <Switch
-                              checked={field.value}
-                              defaultChecked={false}
-                              onCheckedChange={field.onChange}
-                            />
-                          ) : formField.field_type === "checkbox" ? (
-                            <Checkbox
-                              id="terms"
-                              checked={field.value}
-                              defaultChecked={false}
-                              onCheckedChange={field.onChange}
-                            />
-                          ) : (
-                            <Input
-                              type={formField.type}
-                              placeholder={formField.field_title}
-                              {...field}
-                              value={field.value || ""}
-                            />
-                          )}
+                        <FormControl>
+                          {productRenderFormControl(formField, field)}
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                ))}
+                );
+              })}
               </div>
 
               <div className="bg-gradient-to-bl from-sky-400 via-white to-white absolute top-0 left-0 w-full h-full opacity-20"></div>
             </div>
           ))}
 
-          <div className="sticky w-full z-10 !my-0 bg-white/10 opacity-100 shadow-sm border border-neutral-200 bottom-6 backdrop-blur-lg left-0 p-6 lg:p-8 rounded-t-3xl flex items-center justify-end">
+          <div className="sticky w-full z-10 !my-0 bg-white/10 opacity-100 shadow-sm border border-neutral-200 bottom-6 backdrop-blur-lg left-0 p-6 lg:p-8 rounded-t-lg flex items-center justify-end">
             <Button
               disabled={form.formState.isSubmitting}
               type="submit"
               className="block"
             >
-              Submit
+              Save and Publish
             </Button>
           </div>
         </form>
-
-        
       </Form>
 
-      <div className="mt-4">
-        {Object.keys(form.formState.errors).length > 0 && (
-          <div className="text-red-500">
-            <h3 className="font-bold">Form Errors:</h3>
-            <ul className="list-disc list-inside">
-        {Object.entries(form.formState.errors).map(([key, error]) => (
-          <li key={key}>
-            {snakeCaseToText(key)}: {(error as any).message}
-          </li>
-        ))}
-            </ul>
-          </div>
-        )}
-      </div>
+      {/* Language Switch Alert */}
+      <AlertDialog 
+        open={isSwitchLanguageAlertOpen} 
+        onOpenChange={setIsSwitchLanguageAlertOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your
+              current product specifications.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={()=>{
+              setPendingLanguage('');
+              setIsSwitchLanguageAlertOpen(false);
+            }}>
+              Cancel
+            </AlertDialogCancel>
+
+            <AlertDialogAction onClick={()=>{
+              setSelectedLanguage(pendingLanguage);
+              setPendingLanguage('');
+              form.reset();
+              setIsSwitchLanguageAlertOpen(false);
+            }}>
+              Close Anyway
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
