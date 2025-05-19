@@ -134,3 +134,7 @@
   display: none;
   width: 0;
 }
+
+.w-md-editor-text{
+  @apply size-full;
+}
