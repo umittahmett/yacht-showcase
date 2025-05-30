@@ -1,101 +1,113 @@
-import Image from "next/image";
+"use client";
+import { createClient } from "@/utils/supabase/client";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const supabase = createClient();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+  const dataArray = [
+    {
+      name: "Harbor fees and checkout",
+      field_name: "harbor_fees_and_checkout",
+      language_code: "en",
+    },
+    {
+      name: "Costs of transit log document and shipping agency for necessary procedures",
+      field_name: "costs_of_transit_log_document_and_shipping_agency",
+      language_code: "en",
+    },
+    {
+      name: "Cost of moorage",
+      field_name: "cost_of_moorage",
+      language_code: "en",
+    },
+    { name: "Crew service", field_name: "crew_service", language_code: "en" },
+    { name: "Utility water", field_name: "utility_water", language_code: "en" },
+    {
+      name: "Fuel costs on route",
+      field_name: "fuel_costs_on_route",
+      language_code: "en",
+    },
+    {
+      name: "Quilt cover and bathroom sets",
+      field_name: "quilt_cover_and_bathroom_sets",
+      language_code: "en",
+    },
+    {
+      name: "Free use of boat equipments",
+      field_name: "free_use_of_boat_equipments",
+      language_code: "en",
+    },
+    {
+      name: "Yacht insurance (individual travel insurance is recommended)",
+      field_name: "yacht_insurance",
+      language_code: "en",
+    },
+    {
+      name: "Yacht provisions and drinks",
+      field_name: "yacht_provisions_and_drinks",
+      language_code: "en",
+    },
+    {
+      name: "Keelage and customs expenses on foreign territorial waters",
+      field_name: "keelage_and_customs_expenses",
+      language_code: "en",
+    },
+    { name: "VAT", field_name: "vat", language_code: "en" },
+    {
+      name: "Airport transfers",
+      field_name: "airport_transfers",
+      language_code: "en",
+    },
+    {
+      name: "Use of fuel-operated water sports equipment if available on boat",
+      field_name: "use_of_fuel_operated_water_sports_equipment",
+      language_code: "en",
+    },
+  ];
+
+  const addFeatures = async () => {
+    const { data, error } = await supabase.from("services").select("*");
+
+    if (!error) {
+      const insertData = dataArray
+        .map((item) => {
+          const matchingItem = data?.find(
+            (entry) => entry.field_name === item.field_name
+          );
+
+          if (matchingItem) {
+            return {
+              name: item.name,
+              language_code: "en",
+              service_id: matchingItem.id,
+            };
+          }
+          return null;
+        })
+        .filter((item) => item !== null);
+
+      if (insertData.length > 0) {
+        console.log("Inserting data:", insertData);
+
+        const { data, error } = await supabase
+          .from("service_translations")
+          .insert(insertData)
+          .select();
+        if (error) {
+          console.error("Error inserting data:", error);
+        }
+        console.log("Data inserted successfully:", data);
+      }
+    } else {
+      console.error("Error inserting data:", error);
+    }
+  };
+
+  return (
+    <button
+      className="rounded-lg cursor-pointer bg-blue-500 text-white px-6 py-3"
+    >
+      sa
+    </button>
   );
 }

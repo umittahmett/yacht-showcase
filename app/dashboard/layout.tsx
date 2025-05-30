@@ -14,7 +14,7 @@ export default function RootLayout({
         <AppSidebar />
         <main className="relative w-full overflow-hidden max-h-dvh p-6 lg:p-8 !pb-0 bg-repeat bg-cover ">
           <SidebarTrigger className="relative z-10" />
-          <div className="relative z-10 max-h-full mx-auto scrollbar-hidden overflow-y-auto max-w-7xl">
+          <div className="relative mx-auto z-10 max-h-full scrollbar-hidden overflow-y-auto container px-2.5">
             {children}
           </div>
           {/* Background */}
