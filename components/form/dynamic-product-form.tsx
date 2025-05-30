@@ -58,11 +58,52 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
     }
   }, [pendingLanguage, isSwitchLanguageAlertOpen, form.formState.isDirty, selectedLanguage]);
 
-  const onSubmit = async (data:any) => {
+  const onSubmit = async (data: any) => {
     try {
+      const featuresArray: Array<{
+        group_name: string,
+        fields: Array<{
+          id: string,
+          field_name: string,
+          field_type: string,
+          localizable: boolean,
+          value: any
+        }>
+      }> = [];
+      
+      groups.forEach(group => {
+        const groupKey = group.name
+        
+        const groupData = {
+          group_name: groupKey,
+          fields: [] as Array<{
+            id: string,
+            field_name: string,
+            field_type: string,
+            localizable: boolean,
+            value: any
+          }>
+        };
+        
+        group.fields.forEach((formField: any) => {
+          const fieldValue = data[groupKey]?.[formField.field_name];
+          
+          groupData.fields.push({
+            id: formField.id,
+            field_name: formField.field_name,
+            field_type: formField.field_type,
+            localizable: formField.localizable,
+            value: fieldValue
+          });
+        });
+
+        featuresArray.push(groupData);
+      });
+
       const formData = new FormData();
-      formData.append("features", JSON.stringify(data));
-      formData.append("language", selectedLanguage);
+      formData.append("features", JSON.stringify(featuresArray));
+      formData.append("language", JSON.stringify(selectedLanguage));
+      
       await createProduct(formData);
     } catch (error) {
       console.log(error);
@@ -109,41 +150,43 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
               </h2>
 
               <div className="relative z-[1] space-y-3 border-t border-neutral-300 grid lg:grid-cols-2 gap-6 pt-6">
-              {group.fields.map((formField:any, index:number) => {
+              {group.fields.map((formField:any) => {
                 const fieldName = `${toSnakeCase(group.title)}.${formField.field_name}`;
                 const isFieldDisabled = formField.localizable === false && selectedLanguage !== languages[0]?.code;
                 const isCheckboxOrToggle = formField.field_type === "checkbox" || formField.field_type === "toggle";
                 
-                return (
-                  <FormField
-                    key={`${fieldName}-${index}`}
-                    control={form.control}
-                    name={fieldName}
-                    render={({ field }) => (
-                      <FormItem
-                        className={clsx("text-base font-medium", {
-                          "flex items-center": isCheckboxOrToggle,
-                          "col-span-2": formField.field_type === "markdown",
-                        })}
-                      >
-                        <FormLabel
-                          className={clsx("", {
-                            "order-2":
-                              formField.field_type == "checkbox" ||
-                              formField.field_type == "toggle",
-                              'opacity-50 cursor-not-allowed': isFieldDisabled
+                if (!isFieldDisabled) {
+                  return (
+                    <FormField
+                      key={`${fieldName}-${formField.id}`}
+                      control={form.control}
+                      name={fieldName}
+                      render={({ field }) => (
+                        <FormItem
+                          className={clsx("text-base font-medium", {
+                            "flex items-center": isCheckboxOrToggle,
+                            "col-span-2": formField.field_type === "markdown",
                           })}
                         >
-                          {formField.field_title}
-                        </FormLabel>
-                        <FormControl>
-                          {productRenderFormControl(formField, field)}
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                );
+                          <FormLabel
+                            className={clsx("", {
+                              "order-2":
+                                formField.field_type == "checkbox" ||
+                                formField.field_type == "toggle",
+                                'opacity-50 cursor-not-allowed': isFieldDisabled
+                            })}
+                          >
+                            {formField.field_title}
+                          </FormLabel>
+                          <FormControl>
+                            {productRenderFormControl(formField, field)}
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  );
+                }
               })}
               </div>
 

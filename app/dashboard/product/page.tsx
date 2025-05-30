@@ -119,6 +119,7 @@ export default async function ProductFormWrapper() {
     ) as FeatureTranslation | undefined;
 
     return {
+      name: group.title,
       title: translatedGroup?.name ?? group.title,
       group_language_code: translatedGroup?.language_code ?? null,
       fields: group.fields.map((field: GroupField) => {
