@@ -1,11 +1,15 @@
 "use client"
-
 import { ColumnDef } from "@tanstack/react-table"
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
 export type Product = {
   id: string
+  images: string[]
+  base_informations?: {
+    id: string
+    field_name: string
+    value: string
+    language_code: string
+  }[]
   status: "pending" | "processing" | "success" | "failed"
   created_at: string
 }
@@ -49,16 +53,44 @@ export const columns: ColumnDef<Product>[] = [
   {
     accessorKey: "id",
     header: ({ column }) => {
+      return <span>ID</span>
+    },
+  },
+  {
+    id: "image",
+    header: () => {
       return (
-        <Button
-          variant="ghost"
-          className="px-0"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          ID
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+        <span>Image</span>
       )
+    },
+    cell: ({ row }) => {
+      const product = row.original
+
+      return (
+        <img  
+          src={product.images && product.images[0] || "/placeholder-image.webp"}
+          alt={`Product ${product.id}`}
+          className="h-10 w-10 rounded object-cover"
+          onError={(e) => {
+            e.currentTarget.src = "/placeholder-image.webp"
+          }}
+        />
+
+      )
+    },
+  },
+    {
+    id: "name",
+    header: () => {
+      return (
+        <span>Name</span>
+      )
+    },
+    cell: ({ row }) => {
+      const product = row.original
+      const productName = product.base_informations?.[0]?.value
+
+      return <span className="truncate">{productName}</span>
     },
   },
   {
@@ -74,6 +106,10 @@ export const columns: ColumnDef<Product>[] = [
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
+    },
+    cell: ({ row }) => {
+      const product = row.original  
+      return <span>{product.status ? 'published' : 'draft'}</span>
     },
   },
   {
