@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -18,6 +18,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { createProduct } from "@/app/dashboard/product/actions";
 import { productRenderFormControl } from "./product-render-form-control";
 import { buildSchemaFromFields, generateDefaultValues } from "@/lib/validation/schema-utils";
+import { FileUpload } from "../ui/file-upload";
+import { z } from "zod";
 
 interface DynamicFormProps {
   languages: any[]
@@ -29,13 +31,49 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
   const [selectedLanguage, setSelectedLanguage] = useState<string>(languages?.[0]?.code || '');
   const [pendingLanguage, setPendingLanguage] = useState<string>('');
   const [isSwitchLanguageAlertOpen, setIsSwitchLanguageAlertOpen] = useState(false);
-  const initialSchema = buildSchemaFromFields(groups);
-  const initialDefaultValues = generateDefaultValues(groups);
+
+  const schemaWithFiles = useMemo(() => {
+    const baseSchema = buildSchemaFromFields(groups);
+    return baseSchema.extend({
+      images: z.array(
+      z.instanceof(File)
+        .refine(file => file.size <= 1 * 1024 * 1024, "Her bir dosya 5MB'dan küçük olmalı")
+      )
+      .min(1, "En az bir resim yüklemelisiniz")
+      .refine(
+      files => files.reduce((acc, file) => acc + file.size, 0) <= 5 * 1024 * 1024,
+      "Toplam dosya boyutu 5MB'dan küçük olmalı"
+      )
+    });
+  }, [groups]);
   
   const form = useForm({
-    resolver: zodResolver(initialSchema),
-    defaultValues: initialDefaultValues,
+    resolver: zodResolver(schemaWithFiles),
+    defaultValues: {
+      ...generateDefaultValues(groups),
+      images: []
+    },
   });
+
+  const handleFileUpload = (files: File[]) => {
+    if (!files || files.length === 0){
+      console.log("File upload is empty");
+      form.resetField('images', {
+        defaultValue: [],
+        keepDirty: false,
+        keepTouched: false,
+        keepError: false,
+      });
+    }
+
+    else{
+      form.setValue('images', files, { 
+        shouldValidate: true,
+        shouldDirty: true 
+      });
+    }
+  };
+
 
   useEffect(() => {
     setIsFormReady(true);
@@ -101,6 +139,13 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
       });
 
       const formData = new FormData();
+      if (data.images && data.images.length > 0) {
+        data.images.forEach((file: File) => {
+          formData.append("images", file);
+        });
+      }
+      console.log('data.images: ', data.images);
+      
       formData.append("features", JSON.stringify(featuresArray));
       formData.append("language", JSON.stringify(selectedLanguage));
       
@@ -140,6 +185,28 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
           className="z-10 *:my-10 w-full"
           onSubmit={form.handleSubmit(onSubmit)}
         >
+      <FormField
+            control={form.control}
+            name='images'
+            render={({ field }) => (
+              <FormItem
+                className="text-base font-medium col-span-2"
+              >
+                <FormLabel>
+                  Product Images
+                </FormLabel>
+                <FormControl>
+                  <FileUpload 
+                    onChange={(files) => {
+                      field.onChange(files);
+                      handleFileUpload(files);
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}  
+          />
           {groups.map((group) => (
             <div
               className="border first:mt-4 border-neutral-200 shadow-sm rounded-lg relative bg-neutral-50 p-6 overflow-hidden lg:p-8"
@@ -150,44 +217,44 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
               </h2>
 
               <div className="relative z-[1] space-y-3 border-t border-neutral-300 grid lg:grid-cols-2 gap-6 pt-6">
-              {group.fields.map((formField:any) => {
-                const fieldName = `${toSnakeCase(group.title)}.${formField.field_name}`;
-                const isFieldDisabled = formField.localizable === false && selectedLanguage !== languages[0]?.code;
-                const isCheckboxOrToggle = formField.field_type === "checkbox" || formField.field_type === "toggle";
-                
-                if (!isFieldDisabled) {
-                  return (
-                    <FormField
-                      key={`${fieldName}-${formField.id}`}
-                      control={form.control}
-                      name={fieldName}
-                      render={({ field }) => (
-                        <FormItem
-                          className={clsx("text-base font-medium", {
-                            "flex items-center": isCheckboxOrToggle,
-                            "col-span-2": formField.field_type === "markdown",
-                          })}
-                        >
-                          <FormLabel
-                            className={clsx("", {
-                              "order-2":
-                                formField.field_type == "checkbox" ||
-                                formField.field_type == "toggle",
-                                'opacity-50 cursor-not-allowed': isFieldDisabled
+                {group.fields.map((formField:any) => {
+                  const fieldName = `${toSnakeCase(group.title)}.${formField.field_name}`;
+                  const isFieldDisabled = formField.localizable === false && selectedLanguage !== languages[0]?.code;
+                  const isCheckboxOrToggle = formField.field_type === "checkbox" || formField.field_type === "toggle";
+                  
+                  if (!isFieldDisabled) {
+                    return (
+                      <FormField
+                        key={`${fieldName}-${formField.id}`}
+                        control={form.control}
+                        name={fieldName}
+                        render={({ field }) => (
+                          <FormItem
+                            className={clsx("text-base font-medium", {
+                              "flex items-center": isCheckboxOrToggle,
+                              "col-span-2": formField.field_type === "markdown",
                             })}
                           >
-                            {formField.field_title}
-                          </FormLabel>
-                          <FormControl>
-                            {productRenderFormControl(formField, field)}
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  );
-                }
-              })}
+                            <FormLabel
+                              className={clsx("", {
+                                "order-2":
+                                  formField.field_type == "checkbox" ||
+                                  formField.field_type == "toggle",
+                                  'opacity-50 cursor-not-allowed': isFieldDisabled
+                              })}
+                            >
+                              {formField.field_title}
+                            </FormLabel>
+                            <FormControl>
+                              {productRenderFormControl(formField, field)}
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    );
+                  }
+                })}
               </div>
 
               <div className="bg-gradient-to-bl from-sky-400 via-white to-white absolute top-0 left-0 w-full h-full opacity-20"></div>
