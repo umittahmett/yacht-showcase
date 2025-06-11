@@ -14,7 +14,7 @@ export type Product = {
   created_at: string
 }
 
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, MoreHorizontal, Pen, Trash } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -148,13 +148,18 @@ export const columns: ColumnDef<Product>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(product.id)}
+              onClick={() => console.log('edit product', product.id)}
             >
-              Copy product ID
+              <Pen/> 
+              Details
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View product details</DropdownMenuItem>
+            <DropdownMenuItem
+            className="text-red-600 hover:!text-red-600"
+              onClick={() => console.log('delete product', product.id)}
+            >
+              <Trash className="text-red-600" />
+              Delete
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
