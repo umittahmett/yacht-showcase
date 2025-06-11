@@ -55,7 +55,7 @@ export function productRenderFormControl(
     default:
       return (
         <Input
-          type={formField.type}
+          type={formField.field_type}
           disabled={field.disabled}
           placeholder={formField.field_title}
           {...field}
