@@ -1,53 +1,7 @@
 import { DynamicForm } from "@/components/form/dynamic-product-form";
+import { PricingType, FeatureTranslation, Group, GroupTranslation, Language, GroupField, GroupTranslationField } from "@/types/product";
 import { createClient } from "@/utils/supabase/server";
-import { error } from "console";
-
-interface Group {
-  title: string;
-  group_language_code?:string;
-  fields: GroupField[]
-}
-
-interface GroupField {
-  id: number;
-  field_title?:string;
-  field_language_code?:string
-  name: string;
-  field_name: string;
-  field_type: string;
-  required: boolean;
-  localizable: boolean;
-  language_code: string;
-  created_at: string;
-}
-
-interface GroupTranslationField {
-  id: number;
-  feature_id: number;
-  name: string;
-  language_code: string;
-  created_at: string;
-}
-
-interface Language {
-  id: number;
-  code: string;
-  name: string;
-  created_at: string;
-}
-
-interface FeatureTranslation {
-  id: number;
-  feature_name: string;
-  name: string;
-  language_code: string;
-  created_at: string
-}
-
-interface GroupTranslation {
-  title: string;
-  fields: GroupTranslationField[]
-}
+import { error, group } from "console";
 
 export default async function ProductFormWrapper() {
   const supabase = await createClient();
@@ -75,7 +29,7 @@ export default async function ProductFormWrapper() {
     })
   )) as Group[];
   
-  const groups_translations:GroupTranslation[] = (await Promise.all(
+  const groupsTranslations:GroupTranslation[] = (await Promise.all(
     groupNames.map(async (groupName) => {
       const {data, error} = await supabase.from(`${groupName}_translations`).select("*");
 
@@ -90,7 +44,7 @@ export default async function ProductFormWrapper() {
     })
   )) as GroupTranslation[];
   
-  const features_translations:FeatureTranslation[] = await 
+  const featuresTranslations:FeatureTranslation[] = await 
   supabase.from(`features_translations`).select("*").then(response => {
     if (response.error) {
       console.error("Error fetching fields:", error);
@@ -109,11 +63,11 @@ export default async function ProductFormWrapper() {
   })
 
   const translatedGroups = groups.map((group: Group) => {
-    const translationGroup = groups_translations.find(
+    const translationGroup = groupsTranslations.find(
       (transGroup) => (transGroup as GroupTranslation).title === group.title
     ) as GroupTranslation | undefined;
 
-    const translatedGroup = features_translations?.find(
+    const translatedGroup = featuresTranslations?.find(
       (transGroup: FeatureTranslation) =>
         transGroup.feature_name === group.title && transGroup.language_code === "en"
     ) as FeatureTranslation | undefined;
@@ -140,6 +94,60 @@ export default async function ProductFormWrapper() {
       }),
     };
   });
+
+  const {data:pricingPeriods, error:pricingPeriodsError} = await supabase.from('pricing_periods').select("*");
+  const {data:pricingTypes, error:pricingTypesError} = await supabase.from('pricing_types').select("*");
+  const {data:pricingTypesTranslations, error:pricingTypesTranslationsError} = await supabase.from('pricing_types_translations').select("*");
+  const {data:pricingPeriodsTranslations, error:pricingPeriodsTranslationsError} = await supabase.from('pricing_periods_translations').select("*");
+  
+  if (pricingPeriodsTranslationsError || pricingPeriodsError || pricingTypesError || pricingTypesTranslationsError) {throw new Error('Error fetching pricing data')}
+
+
+  const translatedPricingTypes = pricingTypes?.map((type: PricingType)=>{
+    const translation: FeatureTranslation | any  = pricingTypesTranslations?.find((translatedType: FeatureTranslation)=> translatedType.feature_id == type.id && translatedType.language_code === 'en');
+    if (!translation) {
+      console.log('translation yok');
+    }
+    
+    return {
+      ...type,
+      name: translation ? translation?.name : type.field_name,
+      language_code: translation ? translation?.language_code : 'global',
+    };  
+  })
+
+  const translatedPricingPeriods = pricingPeriods?.map((type: PricingType)=>{
+    const translation: FeatureTranslation | any  = pricingPeriodsTranslations?.find((translatedPeriod: FeatureTranslation)=> translatedPeriod.feature_id == type.id && translatedPeriod.language_code === 'en');
+    if (!translation) {
+      console.log('translation yok');
+    }
+    
+    return {
+      ...type,
+      field_title: translation ? translation?.name : type.field_name,
+      field_language_code: translation ? translation?.language_code : 'global',
+    };  
+  })
+
+
+  const pricingData:Group[] | any = translatedPricingTypes.map((pricingType:PricingType)=> {
+    return {
+      name: pricingType.field_name,
+      title: pricingType.name ?? pricingType.field_name,
+      group_language_code: pricingType?.language_code ?? 'global',
+      fields: [...translatedPricingPeriods]
+    }
+  })
+
+  console.log('period fields:', pricingPeriods);
+
+  console.log('pricing data:', pricingData)
+  console.log('translatedPricingTypes:', translatedPricingTypes);
+
+  translatedGroups.push(...pricingData);
+
+  console.log('translatedGroups:', translatedGroups);
+  
 
   return <DynamicForm languages={languages} groups={translatedGroups} />;
 }

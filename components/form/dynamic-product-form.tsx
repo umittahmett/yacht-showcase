@@ -2,6 +2,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+  
 import {
   Form,
   FormControl,
@@ -20,6 +21,7 @@ import { productRenderFormControl } from "./product-render-form-control";
 import { buildSchemaFromFields, generateDefaultValues } from "@/lib/validation/schema-utils";
 import { FileUpload } from "../ui/file-upload";
 import { z } from "zod";
+import { PricingPeriod, PricingType } from "@/types/product";
 
 interface DynamicFormProps {
   languages: any[]
@@ -182,15 +184,15 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
 
       <Form {...form}>
         <form
-          className="z-10 *:my-10 w-full"
+          className="z-10 grid grid-cols-3 gap-10 w-full"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-      <FormField
+          <FormField
             control={form.control}
             name='images'
             render={({ field }) => (
               <FormItem
-                className="text-base font-medium col-span-2"
+                className="text-base font-medium col-span-full"
               >
                 <FormLabel>
                   Product Images
@@ -207,16 +209,17 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
               </FormItem>
             )}  
           />
+
           {groups.map((group) => (
             <div
-              className="border first:mt-4 border-neutral-200 shadow-sm rounded-lg relative bg-neutral-50 p-6 overflow-hidden lg:p-8"
+              className={clsx('border first:mt-4 border-neutral-200 shadow-sm rounded-lg relative bg-neutral-50 p-6 overflow-hidden lg:p-8', group.name.includes('price') ? 'col-span-1' : 'col-span-full')}
               key={group.title}
             >
               <h2 className="relative z-[1] text-lg font-bold pb-6 text-neutral-900">
                 {group.title}
               </h2>
 
-              <div className="relative z-[1] space-y-3 border-t border-neutral-300 grid lg:grid-cols-2 gap-6 pt-6">
+              <div className={clsx("relative z-[1] space-y-3 border-t border-neutral-300 grid gap-6 pt-6", group.name.includes('price') ? 'grid-cols-1' : 'lg:grid-cols-2')}>
                 {group.fields.map((formField:any) => {
                   const fieldName = `${toSnakeCase(group.title)}.${formField.field_name}`;
                   const isFieldDisabled = formField.localizable === false && selectedLanguage !== languages[0]?.code;
@@ -261,7 +264,7 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
             </div>
           ))}
 
-          <div className="sticky w-full z-10 !my-0 bg-white/10 opacity-100 shadow-sm border border-neutral-200 bottom-6 backdrop-blur-lg left-0 p-6 lg:p-8 rounded-t-lg flex items-center justify-end">
+          <div className="sticky col-span-full w-full z-10 !my-0 bg-white/10 opacity-100 shadow-sm border border-neutral-200 bottom-6 backdrop-blur-lg left-0 p-6 lg:p-8 rounded-t-lg flex items-center justify-end">
             <Button
               disabled={form.formState.isSubmitting}
               type="submit"
