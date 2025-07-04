@@ -26,6 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Checkbox } from "@/components/ui/checkbox"
+import Link from "next/link"
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -67,14 +68,16 @@ export const columns: ColumnDef<Product>[] = [
       const product = row.original
 
       return (
-        <img  
-          src={product.images && product.images[0] || "/placeholder-image.webp"}
-          alt={`Product ${product.id}`}
-          className="h-10 w-10 rounded object-cover"
-          onError={(e) => {
-            e.currentTarget.src = "/placeholder-image.webp"
-          }}
-        />
+        <Link href={`/dashboard/product/${product.id}`}>
+          <img  
+            src={product.images && product.images[0] || "/placeholder-image.webp"}
+            alt={`Product ${product.id}`}
+            className="h-10 w-10 rounded object-cover"
+            onError={(e) => {
+              e.currentTarget.src = "/placeholder-image.webp"
+            }}
+          />
+        </Link>
 
       )
     },
@@ -147,11 +150,9 @@ export const columns: ColumnDef<Product>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => console.log('edit product', product.id)}
+            <DropdownMenuItem asChild onClick={() => console.log('edit product', product.id)}
             >
-              <Pen/> 
-              Details
+              <Link href={`/dashboard/product/${product.id}`}>Details</Link>
             </DropdownMenuItem>
             <DropdownMenuItem
             className="text-red-600 hover:!text-red-600"
