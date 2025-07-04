@@ -25,6 +25,8 @@ export interface PricingPeriod {
 }
 
 export interface Group {
+  id?: number;
+  name?: string;
   title: string;
   group_language_code?:string;
   fields: GroupField[]
