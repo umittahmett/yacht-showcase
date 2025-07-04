@@ -2,7 +2,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-  
 import {
   Form,
   FormControl,
@@ -21,7 +20,6 @@ import { productRenderFormControl } from "./product-render-form-control";
 import { buildSchemaFromFields, generateDefaultValues } from "@/lib/validation/schema-utils";
 import { FileUpload } from "../ui/file-upload";
 import { z } from "zod";
-import { PricingPeriod, PricingType } from "@/types/product";
 
 interface DynamicFormProps {
   languages: any[]
@@ -30,7 +28,7 @@ interface DynamicFormProps {
 
 export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => {
   const [isFormReady, setIsFormReady] = useState<boolean>(false);
-  const [selectedLanguage, setSelectedLanguage] = useState<string>(languages?.[0]?.code || '');
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(languages?.[0]?.code ?? '');
   const [pendingLanguage, setPendingLanguage] = useState<string>('');
   const [isSwitchLanguageAlertOpen, setIsSwitchLanguageAlertOpen] = useState(false);
 
@@ -48,7 +46,7 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
       )
     });
   }, [groups]);
-  
+
   const form = useForm({
     resolver: zodResolver(schemaWithFiles),
     defaultValues: {
@@ -69,13 +67,12 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
     }
 
     else{
-      form.setValue('images', files, { 
+      form.setValue('images', files, {
         shouldValidate: true,
-        shouldDirty: true 
+        shouldDirty: true
       });
     }
   };
-
 
   useEffect(() => {
     setIsFormReady(true);
@@ -101,6 +98,7 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
   const onSubmit = async (data: any) => {
     try {
       const featuresArray: Array<{
+        id?: number,
         group_name: string,
         fields: Array<{
           id: string,
@@ -110,11 +108,12 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
           value: any
         }>
       }> = [];
-      
+
       groups.forEach(group => {
         const groupKey = group.name
-        
+
         const groupData = {
+          id: group.id,
           group_name: groupKey,
           fields: [] as Array<{
             id: string,
@@ -124,10 +123,10 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
             value: any
           }>
         };
-        
+
         group.fields.forEach((formField: any) => {
           const fieldValue = data[groupKey]?.[formField.field_name];
-          
+
           groupData.fields.push({
             id: formField.id,
             field_name: formField.field_name,
@@ -147,10 +146,10 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
         });
       }
       console.log('data.images: ', data.images);
-      
+
       formData.append("features", JSON.stringify(featuresArray));
       formData.append("language", JSON.stringify(selectedLanguage));
-      
+
       await createProduct(formData);
     } catch (error) {
       console.log(error);
@@ -161,10 +160,10 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
 
   return (
     <div className="relative w-full">
-      <Select 
+      <Select
         onValueChange={(value:string)=>{
           setPendingLanguage(value);
-        }} 
+        }}
         value={selectedLanguage}
       >
         <SelectTrigger className="ml-auto mt-4 w-[180px]">
@@ -198,7 +197,7 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
                   Product Images
                 </FormLabel>
                 <FormControl>
-                  <FileUpload 
+                  <FileUpload
                     onChange={(files) => {
                       field.onChange(files);
                       handleFileUpload(files);
@@ -207,7 +206,7 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
                 </FormControl>
                 <FormMessage />
               </FormItem>
-            )}  
+            )}
           />
 
           {groups.map((group) => (
@@ -224,7 +223,7 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
                   const fieldName = `${toSnakeCase(group.title)}.${formField.field_name}`;
                   const isFieldDisabled = formField.localizable === false && selectedLanguage !== languages[0]?.code;
                   const isCheckboxOrToggle = formField.field_type === "checkbox" || formField.field_type === "toggle";
-                  
+
                   if (!isFieldDisabled) {
                     return (
                       <FormField
@@ -277,8 +276,8 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
       </Form>
 
       {/* Language Switch Alert */}
-      <AlertDialog 
-        open={isSwitchLanguageAlertOpen} 
+      <AlertDialog
+        open={isSwitchLanguageAlertOpen}
         onOpenChange={setIsSwitchLanguageAlertOpen}
       >
         <AlertDialogContent>
