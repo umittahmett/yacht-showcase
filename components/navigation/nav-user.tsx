@@ -3,8 +3,6 @@ import {
   BadgeCheck,
   Bell,
   ChevronsUpDown,
-  LogOut,
-  Mailbox,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";

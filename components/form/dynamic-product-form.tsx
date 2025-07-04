@@ -82,7 +82,7 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
     if (isFormReady) {
       form.reset(generateDefaultValues(groups));
     }
-  }, [groups, isFormReady]);
+  }, [form, groups, isFormReady]);
 
   useEffect(() => {
     if (selectedLanguage && pendingLanguage && !isSwitchLanguageAlertOpen) {
@@ -101,7 +101,7 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
         id?: number,
         group_name: string,
         fields: Array<{
-          id: string,
+          id: number,
           field_name: string,
           field_type: string,
           localizable: boolean,
@@ -116,7 +116,7 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
           id: group.id,
           group_name: groupKey,
           fields: [] as Array<{
-            id: string,
+            id: number,
             field_name: string,
             field_type: string,
             localizable: boolean,

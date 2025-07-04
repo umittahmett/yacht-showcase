@@ -35,7 +35,7 @@ export default function AuthLayout({
         },
       });
     }
-  }, [searchParams]);
+  }, [errorMessage, searchParams]);
 
   return (
     <div className="h-dvh relative">

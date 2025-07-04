@@ -2,10 +2,10 @@
 import { ColumnDef } from "@tanstack/react-table"
 
 export type Product = {
-  id: string
+  id: number
   images: string[]
   base_informations?: {
-    id: string
+    id: number
     field_name: string
     value: string
     language_code: string
@@ -14,7 +14,7 @@ export type Product = {
   created_at: string
 }
 
-import { ArrowUpDown, MoreHorizontal, Pen, Trash } from "lucide-react"
+import { ArrowUpDown, MoreHorizontal, Trash } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -22,11 +22,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Checkbox } from "@/components/ui/checkbox"
 import Link from "next/link"
+import Image from "next/image"
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -53,7 +53,7 @@ export const columns: ColumnDef<Product>[] = [
   },
   {
     accessorKey: "id",
-    header: ({ column }) => {
+    header: () => {
       return <span>ID</span>
     },
   },
@@ -69,7 +69,9 @@ export const columns: ColumnDef<Product>[] = [
 
       return (
         <Link href={`/dashboard/product/${product.id}`}>
-          <img  
+          <Image  
+            width={40}
+            height={40}
             src={product.images && product.images[0] || "/placeholder-image.webp"}
             alt={`Product ${product.id}`}
             className="h-10 w-10 rounded object-cover"

@@ -1,5 +1,5 @@
 import { DynamicForm } from "@/components/form/dynamic-product-form";
-import { PricingType, FeatureTranslation, Group, GroupTranslation, Language, GroupField, GroupTranslationField } from "@/types/product";
+import { PricingType, FeatureTranslation, Group, GroupTranslation, Language, GroupField, GroupTranslationField, Product, ProductFeature, ProductFeatureField, PricingFeatureField } from "@/types/product";
 import { createClient } from "@/utils/supabase/server";
 import { error } from "console";
 import { redirect } from "next/navigation";
@@ -14,9 +14,9 @@ export default async function ProductFormWrapper({
 
   if (!slug) { redirect('/dashboard/product/new') }
 
-  let productData:any = null;
+  let productData:Product | null = null;
   if (slug && slug != 'new'){
-    productData = await getProductData(slug)
+    productData = await getProductData(Number(slug))
   }
 
   const supabase = await createClient();
@@ -156,11 +156,11 @@ export default async function ProductFormWrapper({
 
   if (slug && productData) {
     translatedGroups = translatedGroups.map((group: Group) => {
-      const groupFeatures = productData.features.find((feature: any) => feature.name === group.name);
+      const groupFeatures = productData.features.find((feature: ProductFeature) => feature.name === group.name);
       return {
         ...group,
         fields: group.fields.map((field: GroupField) => {
-          const feature = groupFeatures?.fields.find((feature: any) => feature.feature_id === field.id);
+          const feature = groupFeatures?.fields.find((feature: ProductFeatureField) => feature.feature_id === field.id);
           return {
             ...field,
             value: feature?.value,
@@ -171,18 +171,18 @@ export default async function ProductFormWrapper({
   }
 
   if (slug && productData) {
-    const pricingFeature = productData.features.find((feature: any) => feature.name === 'pricing');
+    const pricingFeature = productData.features.find((feature: ProductFeature) => feature.name === 'pricing');
     
     if (pricingFeature) {
-      const pricingFeatures = pricingFeature.fields;
+      const pricingFeatures:PricingFeatureField[] | any = pricingFeature.fields;
       
       pricingData = pricingData.map((pricingType: Group) => {
-        const pricingTypeData = pricingFeatures.filter((field: any) => field.pricing_type_id === pricingType.id);
+        const pricingTypeData:PricingFeatureField[] | any = pricingFeatures.filter((field: PricingFeatureField) => field.pricing_type_id === pricingType.id);
         console.log('pricingTypeData for', pricingType.id, ':', pricingTypeData);
         return {
           ...pricingType,
           fields: pricingType.fields.map((field)=>{
-            const pricingPeriod = pricingTypeData.find((period: any) => period.pricing_period_id === field.id);
+            const pricingPeriod = pricingTypeData.find((period: PricingFeatureField) => period.pricing_period_id === field.id);
             return {
               ...field,
               value: pricingPeriod?.value,
@@ -195,6 +195,7 @@ export default async function ProductFormWrapper({
   translatedGroups.push(...pricingData);
 
   console.log('pricingData:', pricingData);
+  console.log('product:', productData);
 
   return <DynamicForm languages={languages} groups={translatedGroups} />;
 }

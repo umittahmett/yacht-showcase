@@ -9,7 +9,7 @@ export const buildSchemaFromFields = (groups: any[]) => {
 
     group.fields.forEach((field: any) => {
       const { field_name, field_type, required } = field;
-      let base = field_type === "toggle" ? z.boolean() : z.string();
+      const base = field_type === "toggle" ? z.boolean() : z.string();
       if (required) {
         groupShape[field_name] =
           field_type === "toggle"

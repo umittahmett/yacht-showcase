@@ -101,7 +101,7 @@ const SignInForm = () => {
           </Button>
 
           <div className="text-sm text-neutral-500">
-            Don't have an account
+            Don&apos;t have an account
             <Link
               href="/auth/sign-up"
               className="text-sky-600 font-semibold hover:underline ml-1 whitespace-nowrap"

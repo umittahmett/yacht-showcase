@@ -1,3 +1,42 @@
+
+export interface Product {
+  id: number;
+  images: string[];
+  status: string;
+  created_at: string;
+  features: ProductFeature[]
+}
+
+export interface PricingFeatureField {
+created_at:string
+id:number
+pricing_period_id: number
+pricing_type_id: number
+product_id:number
+value:number
+}
+
+export interface PricingPeriod {
+  id: number
+  field_type: string
+  required: boolean
+  localizable: boolean
+  created_at: string
+  field_name: string
+}
+export interface ProductFeature {
+  fields: ProductFeatureField[]
+  name: string;
+  product_feature_name: string;
+}
+export interface ProductFeatureField {
+  id: number;
+  feature_id: number;
+  language_code: string;
+  product_id: number;
+  value: string;
+  created_at: string;
+}
 export interface PricingType {
   id: number;
   field_name: string;

@@ -135,7 +135,7 @@ export async function createProduct(formData: any) {
   redirect('/dashboard/products')
 }
 
-export async function getProductData(productId: string) {
+export async function getProductData(productId: number) {
 
   const supabase = await createClient()
 
