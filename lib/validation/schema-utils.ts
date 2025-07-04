@@ -34,9 +34,9 @@ export const generateDefaultValues = (groups: any[]) => {
     group.fields.forEach((field: any) => {
       const { field_name, field_type } = field;
       if (field_type === "toggle" || field_type === "checkbox") {
-        defaults[toSnakeCase(group.title)][field_name] = false;
+        defaults[toSnakeCase(group.title)][field_name] = field.value == "true";
       } else {
-        defaults[toSnakeCase(group.title)][field_name] = "";
+        defaults[toSnakeCase(group.title)][field_name] = field.value ?? "";
       }
     });
   });
