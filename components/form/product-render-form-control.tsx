@@ -3,16 +3,11 @@ import { ControllerRenderProps, FieldValues } from "react-hook-form";
 import { Switch } from "../ui/switch";
 import { Checkbox } from "../ui/checkbox";
 import { Input } from "../ui/input";
+import { GroupField } from "@/types/product";
 
-interface FormFieldConfig {
-  field_type: string;
-  field_title: string;
-  type?: string;
-  [key: string]: any;
-}
 
 export function productRenderFormControl(
-  formField: FormFieldConfig,
+  formField: GroupField,
   field: ControllerRenderProps<FieldValues, string>
 ): React.ReactNode {
   switch (formField.field_type) {

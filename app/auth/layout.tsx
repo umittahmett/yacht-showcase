@@ -7,10 +7,10 @@ import { useEffect } from "react";
 
 export default function AuthLayout({
   children,
-}: Readonly<{
+}:{
   children: React.ReactNode;
   searchParams: { error?: string; error_description?: string };
-}>) {
+}) {
   const searchParams = useSearchParams();
   const errorMessage =
     searchParams?.get("error_description") ||

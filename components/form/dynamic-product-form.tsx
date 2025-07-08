@@ -20,10 +20,12 @@ import { productRenderFormControl } from "./product-render-form-control";
 import { buildSchemaFromFields, generateDefaultValues } from "@/lib/validation/schema-utils";
 import { FileUpload } from "../ui/file-upload";
 import { z } from "zod";
+import { Language } from "@/types";
+import { Group, GroupField } from "@/types/product";
 
 interface DynamicFormProps {
-  languages: any[]
-  groups: any[]
+  languages: Language[]
+  groups: Group[]
 }
 
 export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => {
@@ -109,8 +111,8 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
         }>
       }> = [];
 
-      groups.forEach(group => {
-        const groupKey = group.name
+      groups.forEach((group:Group) => {
+        const groupKey = group.name ?? ""
 
         const groupData = {
           id: group.id,
@@ -125,7 +127,7 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
         };
 
         group.fields.forEach((formField: any) => {
-          const fieldValue = data[groupKey]?.[formField.field_name];
+          const fieldValue = data[groupKey as string]?.[formField.field_name];
 
           groupData.fields.push({
             id: formField.id,
@@ -209,17 +211,17 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
             )}
           />
 
-          {groups.map((group) => (
+          {groups.map((group:Group) => (
             <div
-              className={clsx('border first:mt-4 border-neutral-200 shadow-sm rounded-lg relative bg-neutral-50 p-6 overflow-hidden lg:p-8', group.name.includes('price') ? 'col-span-1' : 'col-span-full')}
+              className={clsx('border first:mt-4 border-neutral-200 shadow-sm rounded-lg relative bg-neutral-50 p-6 overflow-hidden lg:p-8', group.name?.includes('price') ? 'col-span-1' : 'col-span-full')}
               key={group.title}
             >
               <h2 className="relative z-[1] text-lg font-bold pb-6 text-neutral-900">
                 {group.title}
               </h2>
 
-              <div className={clsx("relative z-[1] space-y-3 border-t border-neutral-300 grid gap-6 pt-6", group.name.includes('price') ? 'grid-cols-1' : 'lg:grid-cols-2')}>
-                {group.fields.map((formField:any) => {
+              <div className={clsx("relative z-[1] space-y-3 border-t border-neutral-300 grid gap-6 pt-6", group.name?.includes('price') ? 'grid-cols-1' : 'lg:grid-cols-2')}>
+                {group.fields.map((formField:GroupField) => {
                   const fieldName = `${toSnakeCase(group.title)}.${formField.field_name}`;
                   const isFieldDisabled = formField.localizable === false && selectedLanguage !== languages[0]?.code;
                   const isCheckboxOrToggle = formField.field_type === "checkbox" || formField.field_type === "toggle";

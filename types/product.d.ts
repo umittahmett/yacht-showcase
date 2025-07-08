@@ -76,12 +76,15 @@ export interface GroupField {
   field_title?:string;
   field_language_code?:string
   name: string;
+  group_name?: string;
   field_name: string;
   field_type: string;
   required: boolean;
   localizable: boolean;
   language_code: string;
   created_at: string;
+  value?:any  
+
 }
 
 export interface GroupTranslationField {
@@ -102,4 +105,11 @@ export interface Language {
 export interface GroupTranslation {
   title: string;
   fields: GroupTranslationField[]
+}
+
+export interface FormFieldConfig {
+  field_type: string;
+  field_title: string;
+  type?: string;
+  [key: string]: any;
 }
