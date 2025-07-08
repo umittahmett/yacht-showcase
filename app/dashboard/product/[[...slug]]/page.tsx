@@ -1,5 +1,5 @@
 import { DynamicForm } from "@/components/form/dynamic-product-form";
-import { PricingType, FeatureTranslation, Group, GroupTranslation, Language, GroupField, GroupTranslationField, Product, ProductFeature, ProductFeatureField, PricingFeatureField } from "@/types/product";
+import { PricingType, FeatureTranslation, Group, GroupTranslation, Language, GroupField, GroupTranslationField, ProductFeature, ProductFeatureField, PricingFeatureField } from "@/types/product";
 import { createClient } from "@/utils/supabase/server";
 import { error } from "console";
 import { redirect } from "next/navigation";
@@ -8,13 +8,14 @@ import { getProductData } from "../actions";
 export default async function ProductFormWrapper({
   params,
 }: {
-  params: { slug: string }
+  params: Promise<{ slug?: string }>
 }) {
-  const { slug } = params;
+  const { slug } = await params;
 
   if (!slug) { redirect('/dashboard/product/new') }
 
-  let productData:Product | null = null;
+  let productData:any = null;
+
   if (slug && slug != 'new'){
     productData = await getProductData(Number(slug))
   }

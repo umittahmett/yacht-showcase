@@ -66,7 +66,7 @@ const useFormField = () => {
 };
 
 type FormItemContextValue = {
-  id: number;
+  id: string;
 };
 
 const FormItemContext = React.createContext<FormItemContextValue>(
@@ -74,7 +74,7 @@ const FormItemContext = React.createContext<FormItemContextValue>(
 );
 
 function FormItem({ className, ...props }: React.ComponentProps<"div">) {
-  const id = React.useId();
+  const id = React.useId().toString();
 
   return (
     <FormItemContext.Provider value={{ id }}>

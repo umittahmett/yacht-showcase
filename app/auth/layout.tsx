@@ -7,9 +7,8 @@ import { useEffect } from "react";
 
 export default function AuthLayout({
   children,
-}:{
+}: {
   children: React.ReactNode;
-  searchParams: { error?: string; error_description?: string };
 }) {
   const searchParams = useSearchParams();
   const errorMessage =
