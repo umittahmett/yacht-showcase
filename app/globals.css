@@ -5,7 +5,6 @@
 @import "../styles/section.css";
 @import "../styles/theme.css" layer(theme);
 @import "../styles/container.css";
-@import 'swiper/css';
 
 @custom-variant dark (&:is(.dark *));
 
