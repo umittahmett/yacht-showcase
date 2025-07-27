@@ -1,25 +1,28 @@
 @theme {
   /* Primary */
-  --color-primary-100: #cce5ff;
-  --color-primary-200: #99caff;
-  --color-primary-300: #66b0ff;
-  --color-primary-400: #3395ff;
-  --color-primary-500: #007bff;
-  --color-primary-600: #0062cc;
-  --color-primary-700: #004a99;
-  --color-primary-800: #003166;
-  --color-primary-900: #001933;
+  --color-primary: #020713;
 
-  /* Neutral */
-  --color-neutral-100: #f5f7fa;
-  --color-neutral-200: #e6e9f0;
-  --color-neutral-300: #dde1eb;
-  --color-neutral-400: #c5cbd6;
-  --color-neutral-500: #697586;
-  --color-neutral-600: #6b7280;
-  --color-neutral-700: #545a66;
-  --color-neutral-800: #2b313d;
-  --color-neutral-900: #121926;
+  /* Accent */
+  --color-accent: #3B71FB;
+
+  /* Secondary */
+  --color-secondary: #183170;
+
+  /* Text */
+  --color-text-color: #9499A6;
+
+  /* Orange */
+  --color-orange: #FF7928;
+
+  /* Border */
+  --color-border-100: #C8D7FF;
+  --color-border-200: #0A142D;
+
+  /* Gray */
+  --color-gray-100: #BCC3D8;
+
+  /* Main Background */
+  --color-main-background: #F6F6F9;
 
   /* Line Heights */
   --leading-1.1: 1.1;
@@ -50,6 +53,7 @@
   --text-dynamic-6xl: clamp(3rem, 1.293vw + 2.483rem, 3.75rem);
   --text-dynamic-6.5xl: clamp(3rem, 1.378vw + 2.677rem, 4rem);
   --text-dynamic-7xl: clamp(3rem, 2.012vw + 2.528rem, 4.5rem);
+  --text-dynamic-7.5xl: clamp(3.5rem, 2.9348rem + 2.4117vw, 5.25rem);
   --text-dynamic-8xl: clamp(3.75rem, 3.018vw + 3.043rem, 6rem);
   --text-dynamic-9xl: clamp(4.5rem, 4.694vw + 3.4rem, 8rem);
 }

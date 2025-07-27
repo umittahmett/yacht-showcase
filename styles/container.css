@@ -1,0 +1,39 @@
+@layer components {
+  .container{
+    @apply mx-auto px-4
+  }
+
+  .pl-container {
+    @apply px-4
+  }
+
+  @media (min-width: 640px) {
+    .pl-container {
+      padding-left: calc((100dvw - 640px) / 2 + 16px);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .pl-container {
+      padding-left: calc((100dvw - 768px) / 2 + 16px);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .pl-container {
+      padding-left: calc((100dvw - 1024px) / 2 + 16px);
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .pl-container {
+      padding-left: calc((100dvw - 1280px) / 2 + 16px);
+    }
+  }
+
+  @media (min-width: 1536px) {
+    .pl-container {
+      padding-left: calc((100dvw - 1536px) / 2 + 16px);
+    }
+  }
+}
