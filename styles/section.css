@@ -1,31 +1,33 @@
-section{
-  @apply py-[clamp(3.75rem,2.9425rem+3.4453vw,7.25rem)];
-}
-
-.section-upper-title{
-  @apply uppercase font-[Unna] text-secondary tracking-wide leading-1.1 text-dynamic-xl mb-3 sm:mb-4 lg:mb-5;
-
-  &.title-light{
-    @apply text-white
-  }
-}
-
-.section-title {
-  @apply text-dynamic-5xl leading-1.4 text-primary;
-
-  &.title-xl{
-    @apply text-dynamic-7.5xl leading-1.15
+@layer components {
+  section{
+    @apply py-[clamp(3.75rem,2.9425rem+3.4453vw,7.25rem)];
   }
 
-  &.title-light{
-    @apply text-white
+  .section-upper-title{
+    @apply uppercase font-[Unna] text-secondary tracking-wide leading-1.1 text-dynamic-xl mb-3 sm:mb-4 lg:mb-5;
+
+    &.title-light{
+      @apply text-white
+    }
   }
-}
 
-.section-content {
-  @apply text-dynamic-base leading-1.6 text-text-color mt-3 sm:mt-4 lg:mt-5;
+  .section-title {
+    @apply text-dynamic-5xl leading-1.4 text-primary;
 
-  &.content-light{
-    @apply text-white
+    &.title-xl{
+      @apply text-dynamic-7.5xl leading-1.15
+    }
+
+    &.title-light{
+      @apply text-white
+    }
+  }
+
+  .section-content {
+    @apply text-dynamic-base leading-1.6 text-text-color mt-3 sm:mt-4 lg:mt-5;
+
+    &.content-light{
+      @apply text-white
+    }
   }
 }
