@@ -7,7 +7,7 @@ const FeaturedYacth = () => {
   return (
     <section>
       <div className="container">
-        <div className="flex items-center justify-between gap-8 sm:gap-16 lg:gap-20">
+        <div className="flex flex-wrap items-center justify-between gap-2.5 sm:gap-4 lg:gap-10">
           <h2 className="section-title">Featured Yacth</h2>
           <Button size="lg" asChild>
             <Link href={"/"}>See All</Link>
