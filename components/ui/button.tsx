@@ -18,13 +18,14 @@ const buttonVariants = cva(
         secondary: "bg-secondary hover:bg-accent text-white",
         danger: "bg-red-600 text-white shadow-sm hover:bg-red-800",
         ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+        link: "text-primary underline-offset-4 hover:underline text-accent !p-0",
       },
       size: {
         default: "h-10 sm:h-11 lg:h-[50px] px-6 sm:px-7 lg:px-[30px]",
         lg: "h-12 sm:h-14 lg:h-[60px] px-8 sm:px-9 lg:px-10",
         icon: "size-10 sm:size-11 lg:size-[50px]",
-        iconSmall: '!size-8'
+        iconSmall: '!size-8',
+        iconXl:'size-16 sm:size-20 lg:size-[100px]'
       },
       radius: {
         default: 'rounded-full',
