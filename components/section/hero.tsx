@@ -8,7 +8,7 @@ import { Label } from "../ui/label";
 
 const Hero = () => {
   return (
-    <section className="bg-secondary py-20 sm:py-24 lg:py-32 xl:py-[150px] !mt-0">
+    <section className="bg-secondary lg:py-32 xl:py-[150px] !mt-0">
       <div className="flex flex-col lg:flex-row justify-between container gap-8 sm:gap-16 lg:gap-20">
         <div className="max-w-[520px]">
           <div className="section-upper-title title-light">
