@@ -1,5 +1,5 @@
 section{
-  @apply my-[clamp(3.75rem,2.9425rem+3.4453vw,7.25rem)];
+  @apply py-[clamp(3.75rem,2.9425rem+3.4453vw,7.25rem)];
 }
 
 .section-upper-title{
