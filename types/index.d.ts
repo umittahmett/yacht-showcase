@@ -9,3 +9,10 @@ export interface Language {
   code: string;
   name: string;
 }
+
+export interface InforBlockProps{
+  indicator: ReactNode | number;
+  title: string
+  content: string
+  link?: string
+}
