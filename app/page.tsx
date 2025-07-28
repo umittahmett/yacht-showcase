@@ -1,4 +1,5 @@
 import AboutUs from "@/components/section/about-us";
+import Testimonials from "@/components/section/testimonials";
 import FeaturedYacth from "@/components/section/featured-yacth";
 import Hero from "@/components/section/hero";
 import Services from "@/components/section/services";
@@ -12,6 +13,7 @@ export default function Home() {
       <FeaturedYacth />
       <Services />
       <WhyChooseUs />
+      <Testimonials />
     </div>
   );
 }

@@ -1,3 +1,5 @@
+import { StaticImageData } from "next/image";
+
 export interface SidebarItemProps{
     title: string;
     url: string;
@@ -21,4 +23,14 @@ export interface StatProps{
   value: number
   suffix: string
   content: string
+}
+
+export interface ClientCommentProps{
+  text: string
+  point: number
+  author: {
+    picture: StaticImageData | string
+    name: string
+    title: string
+  }
 }

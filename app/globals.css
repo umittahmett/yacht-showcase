@@ -2,9 +2,12 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
+@import 'swiper/css';
+@import 'swiper/css/pagination';
 @import "../styles/section.css";
 @import "../styles/theme.css" layer(theme);
 @import "../styles/container.css";
+@import "../styles/swiper.css";
 
 @custom-variant dark (&:is(.dark *));
 
