@@ -11,7 +11,7 @@ section{
 }
 
 .section-title {
-  @apply text-dynamic-6xl leading-1.4 text-primary;
+  @apply text-dynamic-5xl leading-1.4 text-primary;
 
   &.title-xl{
     @apply text-dynamic-7.5xl leading-1.15
