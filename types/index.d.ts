@@ -16,3 +16,9 @@ export interface InforBlockProps{
   content: string
   link?: string
 }
+
+export interface StatProps{
+  value: number
+  suffix: string
+  content: string
+}
