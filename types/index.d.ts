@@ -34,3 +34,13 @@ export interface ClientCommentProps{
     title: string
   }
 }
+
+export interface BaseLinkProps {
+  label: string
+  href: string
+}
+
+export interface FooterGroupProps {
+  title: string
+  links: BaseLinkProps[]
+}

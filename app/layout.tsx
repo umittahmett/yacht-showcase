@@ -3,6 +3,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import Banner from "@/components/layout/banner";
 import Header from "@/components/layout/header";
+import Footer from "@/components/layout/footer";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,7 +21,10 @@ export default function RootLayout({
         <Banner />
         <Header />
         {children}
-        <Toaster closeButton richColors position="top-right" />
+        <Footer />
+        <div className="*:py-0">
+          <Toaster closeButton richColors position="top-right" />
+        </div>
       </body>
     </html>
   );
