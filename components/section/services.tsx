@@ -33,7 +33,7 @@ const Services = () => {
   ];
 
   return (
-    <section>
+    <section className="bg-main-background">
       <div className="container">
         <div className="text-center max-w-2xl mx-auto">
           <div className="section-upper-title">
