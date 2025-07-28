@@ -1,4 +1,6 @@
 @theme {
+
+  --breakpoint-2xl: 1280px;
   /* Primary */
   --color-primary: #020713;
 
