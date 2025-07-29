@@ -44,3 +44,9 @@ export interface FooterGroupProps {
   title: string
   links: BaseLinkProps[]
 }
+
+export interface HighLightVideoProps{
+  videoSrc: string
+  thumbnailSrc: string
+  thumbnailAlt: string
+}
