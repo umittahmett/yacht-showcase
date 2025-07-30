@@ -28,7 +28,9 @@ const Header = () => {
   return (
     <header className="bg-white py-4 sm:py-5 lg:py-6">
       <div className="container flex items-center justify-between">
-        <Image src={Logo} alt="Denizdebirhafta Logo" className="w-fit h-10" />
+        <Link href='/'>
+          <Image src={Logo} alt="Denizdebirhafta Logo" className="w-fit h-10" />
+        </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center space-x-8">
