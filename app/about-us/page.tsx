@@ -20,9 +20,9 @@ const AboutUsPage = () => {
         thumbnailSrc="/assets/images/backgrounds/yacht.png"
         thumbnailAlt="Denizde bir hafta"
       />
-      <HowItWorks />
-      <MissionVision />
       <Faq />
+      <MissionVision />
+      <HowItWorks />
     </div>
   );
 }
