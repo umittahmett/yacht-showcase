@@ -1,5 +1,5 @@
-import { InforBlockProps, StatProps } from "@/types";
-import InforBlock from "../shared/info-block";
+import { InfoBlockProps, StatProps } from "@/types";
+import InfoBlock from "../shared/info-block";
 import Image from "next/image";
 import Boat from '@assets/images/dummy-product.jpg'
 import React from "react";
@@ -8,7 +8,7 @@ import Link from "next/link";
 import Stat from "../shared/stat";
 
 const WhyChooseUs = () => {
-    const informations: InforBlockProps[] = [
+    const informations: InfoBlockProps[] = [
       {
         indicator: "01",
         title: "Luxurious Fleet",
@@ -55,7 +55,7 @@ const WhyChooseUs = () => {
             </div>
             <div className="grid sm:grid-cols-2 gap-x-4 h-fit sm:gap-x-5 lg:gap-x-6 gap-y-6 sm:gap-y-7 lg:gap-y-[34px]">
               {informations.map((info, idx) => (
-                <InforBlock key={idx} {...info} />
+                <InfoBlock key={idx} {...info} />
               ))}
             </div>
           </div>
