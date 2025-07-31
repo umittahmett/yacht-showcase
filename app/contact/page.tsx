@@ -7,7 +7,7 @@ import React from 'react'
 const ContactPage = () => {
   return (
     <div>
-      <Hero pages={[{ title: "About Us" , href: '/about'}]} title="Contact Us" />
+      <Hero pages={[{ title: "Contact Us" , href: '/contact'}]} title="Contact Us" />
       <ContactForm />
       <OurOffice />
       <Faq />
