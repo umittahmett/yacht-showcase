@@ -12,11 +12,13 @@ export interface Language {
   name: string;
 }
 
-export interface InforBlockProps{
+export interface InfoBlockProps{
   indicator: ReactNode | number;
   title: string
   content: string
   link?: string
+  variant?: 'horizontal' | 'vertical'
+  iconSize?: 'default' | 'lg'
 }
 
 export interface StatProps{
@@ -49,4 +51,11 @@ export interface HighLightVideoProps{
   videoSrc: string
   thumbnailSrc: string
   thumbnailAlt: string
+}
+
+export interface ContentCardProps{
+  indicator?: ReactNode | number;
+  title: string
+  content: string
+  reverse?: boolean
 }
