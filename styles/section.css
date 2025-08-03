@@ -4,7 +4,7 @@
   }
 
   .section-upper-title{
-    @apply uppercase font-[Unna] text-secondary tracking-wide leading-1.1 text-dynamic-xl mb-3 sm:mb-4 lg:mb-5;
+    @apply uppercase font-[Unna] text-secondary-500 tracking-wide leading-1.1 text-dynamic-xl mb-3 sm:mb-4 lg:mb-5;
 
     &.title-light{
       @apply text-white
@@ -12,7 +12,7 @@
   }
 
   .section-title {
-    @apply text-dynamic-5xl leading-1.4 text-primary;
+    @apply text-dynamic-5xl leading-1.4 text-primary-500;
 
     &.title-xl{
       @apply text-dynamic-7.5xl leading-1.15

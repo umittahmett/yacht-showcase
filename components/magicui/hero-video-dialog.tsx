@@ -92,9 +92,9 @@ export default function HeroVideoDialog({
           className="w-full aspect-[3/2] sm:aspect-[4/2] lg:aspect-[5/2]  object-cover border shadow-lg transition-all duration-200 ease-out group-hover:brightness-[0.8]"
         />
         <div className="absolute inset-0 flex scale-[0.9] items-center justify-center rounded-2xl transition-all duration-200 ease-out group-hover:scale-100">
-          <div className="flex size-28 items-center justify-center rounded-full bg-primary/10 backdrop-blur-md">
+          <div className="flex size-28 items-center justify-center rounded-full bg-primary-500/10 backdrop-blur-md">
             <div
-              className={`relative flex size-20 scale-100 items-center justify-center rounded-full bg-accent shadow-md transition-all duration-200 ease-out group-hover:scale-[1.2]`}
+              className={`relative flex size-20 scale-100 items-center justify-center rounded-full bg-accent-500 shadow-md transition-all duration-200 ease-out group-hover:scale-[1.2]`}
             >
               <Play
                 className="size-6 scale-100 fill-white text-white transition-transform duration-200 ease-out group-hover:scale-105"

@@ -37,7 +37,7 @@ const Header = () => {
             <Link
               key={link.name}
               href={link.href}
-              className="font-[Unna] text-dynamic-base tracking-tight uppercase leading-1.1 hover:text-accent duration-200"
+              className="font-[Unna] text-dynamic-base tracking-tight uppercase leading-1.1 hover:text-accent-500 duration-200"
             >
               {link.name}
             </Link>
@@ -78,7 +78,7 @@ const Header = () => {
                     key={link.name}
                     href={link.href}
                     onClick={() => setIsOpen(false)}
-                    className="font-[Unna] stracking-tight uppercase leading-1.1 hover:text-secondary duration-200 text-dynamic-lg"
+                    className="font-[Unna] stracking-tight uppercase leading-1.1 hover:text-secondary-500 duration-200 text-dynamic-lg"
                   >
                     {link.name}
                   </Link>

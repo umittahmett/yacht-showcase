@@ -64,7 +64,7 @@ export const FileUpload = ({ onChange, value = [] }: FileUploadProps) => {
   });
 
   return (
-    <div className="w-full rounded-md border bg-white border-neutral-300" {...getRootProps()}>
+    <div className="w-full rounded-md border bg-white border-border" {...getRootProps()}>
       <motion.div
         whileHover="animate"
         className="p-10 group/file block rounded-lg w-full relative overflow-hidden"
@@ -142,7 +142,7 @@ export const FileUpload = ({ onChange, value = [] }: FileUploadProps) => {
                     variant="danger"
                     size="icon"
                     type="button"
-                    className="z-50 absolute size-7 -top-2 -right-2"
+                    className="z-50 absolute !size-7 -top-2 -right-2"
                     onClick={()=> removeFile(idx)}
                   >
                     <X />
@@ -195,7 +195,7 @@ export function GridPattern() {
   const columns = 41;
   const rows = 11;
   return (
-    <div className="flex bg-gray-100 dark:bg-neutral-900 shrink-0 flex-wrap justify-center items-center gap-x-px gap-y-px  scale-105">
+    <div className="flex bg-gray-300/70 dark:bg-neutral-900 shrink-0 flex-wrap justify-center items-center gap-x-px gap-y-px  scale-105">
       {Array.from({ length: rows }).map((_, row) =>
         Array.from({ length: columns }).map((_, col) => {
           const index = row * columns + col;

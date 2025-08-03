@@ -5,37 +5,38 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "cursor-pointer font-[Unna] inline-flex active:scale-95 items-center justify-center gap-2 whitespace-nowrap text-lg font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "cursor-pointer inline-flex active:scale-95 items-center justify-center gap-2 whitespace-nowrap font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-accent text-white hover:bg-secondary",
-        white: "bg-white text-accent",
+        default: "bg-accent-500 text-white hover:bg-secondary-500",
+        white: "bg-white text-accent-500",
         destructive:
           "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:
-          "border border-border-200 hover:border-accent bg-none hover:bg-accent hover:text-white",
-        secondary: "bg-secondary hover:bg-accent text-white",
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        secondary: "bg-secondary-500 hover:bg-accent-500 text-white",
         danger: "bg-red-600 text-white shadow-sm hover:bg-red-800",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
+        ghost: "hover:bg-accent !p-0 hover:text-accent-foreground",
         link: "underline-offset-4 hover:underline text-accent !p-0 !h-fit",
       },
       size: {
-        default: "h-10 sm:h-11 lg:h-[50px] px-6 sm:px-7 lg:px-[30px]",
+        default: "h-10 lg:h-11 px-6 sm:px-7 lg:px-[30px]",
+        md: "h-10 sm:h-11 lg:h-[50px] px-6 sm:px-7 lg:px-[30px]",
         lg: "h-12 sm:h-14 lg:h-[60px] px-8 sm:px-9 lg:px-10",
         icon: "size-10 sm:size-11 lg:size-[50px]",
-        iconSmall: '!size-8',
-        iconXl:'size-16 sm:size-20 lg:size-[100px]'
+        iconSmall: "!size-8",
+        iconXl: "size-16 sm:size-20 lg:size-[100px]",
       },
       radius: {
-        default: 'rounded-full',
-        md: 'rounded-[10px]'
-      }
+        default: "rounded-md",
+        full: "rounded-full",
+      },
     },
     defaultVariants: {
       variant: "default",
       size: "default",
-      radius: "default"
+      radius: "default",
     },
   }
 );

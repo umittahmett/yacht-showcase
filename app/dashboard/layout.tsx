@@ -9,7 +9,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <div >
       <SidebarProvider>
         <AppSidebar />
         <main className="relative w-full overflow-hidden max-h-dvh p-6 lg:p-8 !pb-0 bg-repeat bg-cover ">

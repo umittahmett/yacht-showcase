@@ -27,7 +27,7 @@ const ContentCard: React.FC<ContentCardProps> = ({title, indicator, content, rev
         {indicator && (
           <div
             className={
-              "size-10 sm:size-11 lg:size-12 bg-secondary rounded-[10px] flex items-center justify-center leading-1.6 text-white shrink-0 "
+              "size-10 sm:size-11 lg:size-12 bg-secondary-500 rounded-[10px] flex items-center justify-center leading-1.6 text-white shrink-0 "
             }
           >
             {indicator}
@@ -35,7 +35,7 @@ const ContentCard: React.FC<ContentCardProps> = ({title, indicator, content, rev
         )}
 
         <div className="space-y-4 sm:space-y-5 lg:space-y-6">
-          <h3 className="text-dynamic-2xl leading-1.4 text-primary">{title}</h3>
+          <h3 className="text-dynamic-2xl leading-1.4 text-primary-500">{title}</h3>
           <p className="text-text-color leading-1.6">{content}</p>
         </div>
       </div>

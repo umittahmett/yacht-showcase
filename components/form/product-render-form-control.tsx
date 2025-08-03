@@ -17,7 +17,6 @@ export function productRenderFormControl(
           {...field}
           disabled={field.disabled}
           value={field.value || ""}
-          className="border px-2 py-1"
         />
       );
     case "markdown":
@@ -50,6 +49,7 @@ export function productRenderFormControl(
     default:
       return (
         <Input
+          size='sm'
           type={formField.field_type}
           disabled={field.disabled}
           placeholder={formField.field_title}

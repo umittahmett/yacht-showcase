@@ -18,10 +18,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`antialiased`}>
-        <Banner />
-        <Header />
+        {/* <Banner /> */}
+        {/* <Header /> */}
         {children}
-        <Footer />
+        {/* <Footer /> */}
         <div className="*:py-0">
           <Toaster closeButton richColors position="top-right" />
         </div>

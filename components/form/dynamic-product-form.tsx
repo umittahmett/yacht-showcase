@@ -265,7 +265,7 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
             </div>
           ))}
 
-          <div className="sticky col-span-full w-full z-10 !my-0 bg-white/10 opacity-100 shadow-sm border border-neutral-200 bottom-6 backdrop-blur-lg left-0 p-6 lg:p-8 rounded-t-lg flex items-center justify-end">
+          <div className="sticky col-span-full w-full z-10 !my-0 bg-white/10 opacity-100 shadow-sm border border-neutral-200 bottom-12 backdrop-blur-lg left-0 p-4 lg:p-5 rounded-t-lg flex items-center justify-end">
             <Button
               disabled={form.formState.isSubmitting}
               type="submit"

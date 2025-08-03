@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 const Banner = () => {
   return (
-    <div className="bg-secondary py-2.5 sm:py-3 lg:py-3.5">
+    <div className="bg-secondary-500 py-2.5 sm:py-3 lg:py-3.5">
       <div className="container flex items-center justify-between gap-2.5 sm:gap-6 lg:gap-10">
         <div className="flex flex-col md:flex-row items-start md:items-center gap-1 md:gap-6 lg:gap-8">
           <Link

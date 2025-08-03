@@ -16,7 +16,7 @@ interface HeroProps{
 
 const Hero: React.FC<HeroProps> = ({title, pages}) => {
   return (
-    <section className="bg-secondary py-6 sm:py-10">
+    <section className="bg-secondary-500 py-6 sm:py-10">
       <div className="container min-h-44 sm:min-h-60 md:min-h-80 lg:min-h-[370px] flex flex-col items-center justify-center">
         <h1 className="py-1 text-dynamic-6xl section-title title-light sm:text-dynamic-7.5xl font-[Unna]">
           {title}

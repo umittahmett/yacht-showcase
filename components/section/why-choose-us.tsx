@@ -68,12 +68,12 @@ const WhyChooseUs = () => {
         </div>
 
         <div className="mt-8 sm:mt-12 lg:mt-16 flex flex-col lg:flex-row lg:justify-between items-center gap-8 sm:gap-12 lg:gap-20 xl:gap-28">
-          <div className="lg:max-w-md py-6 sm:py-8 lg:py-10 px-8 sm:px-10 lg:px-12 bg-primary rounded-[20px] text-center space-y-3 lg:space-y-4 w-full">
+          <div className="lg:max-w-md py-6 sm:py-8 lg:py-10 px-8 sm:px-10 lg:px-12 bg-primary-500 rounded-[20px] text-center space-y-3 lg:space-y-4 w-full">
             <p className="text-dynamic-2xl leading-1.4 text-white">
               <span className="text-border-100">Embark on Your</span> Dream
               Voyage <span className="text-border-100">Today!</span>
             </p>
-            <Button size="lg" asChild className="w-full">
+            <Button radius="full" size="lg" asChild className="w-full">
               <Link href="/">Book Now!</Link>
             </Button>
           </div>

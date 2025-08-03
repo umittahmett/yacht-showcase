@@ -68,14 +68,14 @@ const ContactForm = () => {
             <div className="space-y-2 lg:space-y-3">
               <Link
                 href="/"
-                className="flex items-center gap-1.5 text-secondary text-sm leading-1.4"
+                className="flex items-center gap-1.5 text-secondary-500 text-sm leading-1.4"
               >
                 <Mail />
                 support@loremipsum.com
               </Link>
               <Link
                 href="/"
-                className="flex items-center gap-1.5 text-secondary text-sm leading-1.4"
+                className="flex items-center gap-1.5 text-secondary-500 text-sm leading-1.4"
               >
                 <Mail />
                 office@loremipsum.com
@@ -89,14 +89,14 @@ const ContactForm = () => {
             <div className="space-y-2 lg:space-y-3">
               <Link
                 href="/"
-                className="flex items-center gap-1.5 text-secondary text-sm leading-1.4"
+                className="flex items-center gap-1.5 text-secondary-500 text-sm leading-1.4"
               >
                 <Phone />
                 1-856-256-2896 x972
               </Link>
               <Link
                 href="/"
-                className="flex items-center gap-1.5 text-secondary text-sm leading-1.4"
+                className="flex items-center gap-1.5 text-secondary-500 text-sm leading-1.4"
               >
                 <Phone />
                 1-854-440-6416 x862
@@ -119,7 +119,7 @@ const ContactForm = () => {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your name" {...field} />
+                    <Input size="lg" placeholder="Enter your name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -132,7 +132,7 @@ const ContactForm = () => {
                 <FormItem>
                   <FormLabel>Surname</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your surname" {...field} />
+                    <Input size="lg" placeholder="Enter your surname" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -145,7 +145,7 @@ const ContactForm = () => {
                 <FormItem>
                   <FormLabel>Phone</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your phone number" {...field} />
+                    <Input size="lg" placeholder="Enter your phone number" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -158,7 +158,7 @@ const ContactForm = () => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your email" {...field} />
+                    <Input size="lg" placeholder="Enter your email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -181,7 +181,7 @@ const ContactForm = () => {
                 </FormItem>
               )}
             />
-            <Button size="lg" className="w-fit" type="submit">
+            <Button radius='full' size="lg" className="w-fit" type="submit">
               Send Message
             </Button>
           </form>

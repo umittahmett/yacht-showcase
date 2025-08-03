@@ -21,12 +21,12 @@ const OurOffice = () => {
             Tincidunt suspendisse et aenean egestas lectus arcu. Quisque erat
             sit massa id sed eleifend ac.
           </p>
-          <Button size="lg" className="mt-3 sm:mt-4 lg:mt-5" type="submit">
+          <Button radius="full" size="lg" className="mt-3 sm:mt-4 lg:mt-5" type="submit">
             Send Message
           </Button>
         </div>
 
-        <div className="lg:col-span-5 py-8 sm:py-10 lg:py-12 px-10 sm:px-12 lg:px-14 bg-secondary rounded-[20px]">
+        <div className="lg:col-span-5 py-8 sm:py-10 lg:py-12 px-10 sm:px-12 lg:px-14 bg-secondary-500 rounded-[20px]">
           <h3 className="text-dynamic-4xl mb-2 sm:mb-4 lg:mb-6 text-white">
             Business Hours
           </h3>
@@ -35,7 +35,7 @@ const OurOffice = () => {
             {businessHours.map((item, idx) => (
               <div key={idx}>
                 <div className="flex items-center gap-4 sm:gap-4 lg:gap-5 text-white py-2">
-                  <Clock className="text-accent" />
+                  <Clock className="text-accent-500" />
                   <span className="text-dynamic-2xl leading-1.4">
                     {item.day}: {item.hours}
                   </span>

@@ -2,19 +2,19 @@
 
   --breakpoint-2xl: 1280px;
   /* Primary */
-  --color-primary: #020713;
+  --color-primary-500: #020713;
 
   /* Accent */
-  --color-accent: #3B71FB;
+  --color-accent-500: #3B71FB;
 
   /* Secondary */
-  --color-secondary: #183170;
+  --color-secondary-500: #183170;
 
   /* Text */
   --color-text-color: #9499A6;
 
   /* Orange */
-  --color-orange: #FF7928;
+  --color-orange-500: #FF7928;
 
   /* Border */
   --color-border-100: #C8D7FF;

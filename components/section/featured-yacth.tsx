@@ -9,7 +9,7 @@ const FeaturedYacth = () => {
       <div className="container">
         <div className="flex flex-wrap items-center justify-between gap-2.5 sm:gap-4 lg:gap-10">
           <h2 className="section-title">Featured Yacth</h2>
-          <Button size="lg" asChild>
+          <Button radius="full" size="lg" asChild>
             <Link href={"/"}>See All</Link>
           </Button>
         </div>

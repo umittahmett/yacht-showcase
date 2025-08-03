@@ -34,7 +34,7 @@ const Footer = () => {
     },
   ];
   return (
-    <footer className="py-12 sm:py-14 lg:py-16 bg-primary">
+    <footer className="py-12 sm:py-14 lg:py-16 bg-primary-500">
       <div className="container">
         <div className="flex flex-col lg:flex-row justify-between items-start gap-10 sm:gap-14 lg:gap-20">
           <div className="max-w-80 w-full space-y-4 lg:space-y-5">

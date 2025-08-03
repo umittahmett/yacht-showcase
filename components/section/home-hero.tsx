@@ -8,7 +8,7 @@ import { Label } from "../ui/label";
 
 const HomeHero = () => {
   return (
-    <section className="bg-secondary lg:py-32 xl:py-[150px] !mt-0">
+    <section className="bg-secondary-500 lg:py-32 xl:py-[150px] !mt-0">
       <div className="flex flex-col lg:flex-row justify-between container gap-8 sm:gap-16 lg:gap-20">
         <div className="max-w-[520px]">
           <div className="section-upper-title title-light">
@@ -22,7 +22,12 @@ const HomeHero = () => {
             ornare. Integer dui pretium et faucibus egestas. Adipiscing egestas
             non aenean mauris donec in adipiscing id tempor.
           </p>
-          <Button className="mt-4 sm:mt-5 lg:mt-6" asChild size="lg">
+          <Button
+            radius="full"
+            className="mt-4 sm:mt-5 lg:mt-6"
+            asChild
+            size="lg"
+          >
             <Link href="/">Discover More</Link>
           </Button>
         </div>
@@ -37,7 +42,7 @@ const HomeHero = () => {
             />
             <div className="absolute inset-0 bg-black/30 px-[34px] py-[30px] flex flex-col justify-between">
               <div className="flex items-center justify-between gap-2.5">
-                <span className="text-xs rounded-full px-5 py-2.5 leading-1.3 bg-orange">
+                <span className="text-xs rounded-full px-5 py-2.5 leading-1.3 bg-orange-500">
                   30% Off
                 </span>
                 <div className="text-sm leading-1.6">4.5/5</div>
@@ -63,7 +68,6 @@ const HomeHero = () => {
               <div className="col-span-2">
                 <Label htmlFor="location">Location</Label>
                 <Input
-                  size="sm"
                   id="location"
                   name="location"
                   placeholder="City, Country, etc"
@@ -74,7 +78,6 @@ const HomeHero = () => {
               <div>
                 <Label htmlFor="capacity">Capacity</Label>
                 <Input
-                  size="sm"
                   id="capacity"
                   name="capacity"
                   placeholder="Capacity"
@@ -85,7 +88,6 @@ const HomeHero = () => {
               <div>
                 <Label htmlFor="capacity">Capacity</Label>
                 <Input
-                  size="sm"
                   id="capacity"
                   name="capacity"
                   placeholder="Capacity"
@@ -94,7 +96,9 @@ const HomeHero = () => {
               </div>
             </div>
 
-            <Button className="w-full mt-3 sm:mt-4 lg:mt-5" variant='secondary' radius='md'>Book Now</Button>
+            <Button className="w-full mt-3 sm:mt-4 lg:mt-5" variant="secondary">
+              Book Now
+            </Button>
           </div>
         </div>
       </div>

@@ -91,7 +91,7 @@ const Testimonials = () => {
           >
             {testimonials.map((comment: ClientCommentProps, idx: number) => (
               <SwiperSlide className="!h-auto" key={idx}>
-                <div className="flex flex-col gap-10 sm:gap-11 lg:gap-12 w-full p-10 sm:p-11 lg:p-12 bg-secondary rounded-[20px] h-full text-white">
+                <div className="flex flex-col gap-10 sm:gap-11 lg:gap-12 w-full p-10 sm:p-11 lg:p-12 bg-secondary-500 rounded-[20px] h-full text-white">
                   <p className="text-dynamic-xl leading-1.15 my-auto">
                     &quot;{comment.text}&quot;
                   </p>

@@ -4,7 +4,7 @@
       @apply !w-7 !h-2 !rounded-sm !bg-border-100;
 
       &.swiper-pagination-bullet-active{
-        @apply !bg-secondary;
+        @apply !bg-secondary-500;
       }
     }
   }

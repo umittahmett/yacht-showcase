@@ -20,7 +20,7 @@ const Gallery = () => {
           <h2 className="section-title max-w-xl">
             Sail through Our Fresh Gallery Updates
           </h2>
-          <Button size="lg" asChild>
+          <Button radius="full" size="lg" asChild>
             <Link href={"/"}>Instagram</Link>
           </Button>
         </div>

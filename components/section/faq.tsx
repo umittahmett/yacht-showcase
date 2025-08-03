@@ -78,9 +78,9 @@ const Faq = () => {
             key={categoryIndex}
             className="space-y-4 sm:space-y-6 lg:space-y-9"
           >
-            <h3 className="text-primary text-dynamic-4xl leading-1.4">
+            <h3 className="text-primary-500 text-dynamic-4xl leading-1.4">
               {category.title}
-              <div className="mt-3 sm:mt-4 lg:mt-5 w-1/6 h-px bg-secondary"></div>
+              <div className="mt-3 sm:mt-4 lg:mt-5 w-1/6 h-px bg-secondary-500"></div>
             </h3>
             <Accordion
               type="multiple"

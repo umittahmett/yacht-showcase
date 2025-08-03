@@ -17,27 +17,27 @@ const Yacth = () => {
       </Link>
       <div className="p-5 sm:p-6 lg:p-[30px] pt-4 lg:pt-5 space-y-3 lg:space-y-4">
         <div className="flex items-center justify-between gap-2.5">
-          <h3 className="text-dynamic-2xl text-primary leading-1.4">
+          <h3 className="text-dynamic-2xl text-primary-500 leading-1.4">
             Aqua Horizon
           </h3>
-          <div className="text-orange text-sm leading-1.6">
+          <div className="text-orange-500 text-sm leading-1.6">
             <span>4.5/5</span>
           </div>
         </div>
 
         <div className="flex items-center justify-between border-y border-border-100 gap-2.5 py-1.5">
           <div className="flex items-center gap-1.5">
-            <Crop className="text-secondary" />
+            <Crop className="text-secondary-500" />
             <span className="text-text-color leading-1.4 text-sm">85” ft</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <Users className="text-secondary" />
+            <Users className="text-secondary-500" />
             <span className="text-text-color leading-1.4 text-sm">
               10 Guest
             </span>
           </div>
           <div className="flex items-center gap-1.5">
-            <Smile className="text-secondary" />
+            <Smile className="text-secondary-500" />
             <span className="text-text-color leading-1.4 text-sm">3 Crew</span>
           </div>
         </div>
@@ -48,10 +48,10 @@ const Yacth = () => {
         </p>
 
         <div className="flex items-center justify-between gap-2.5">
-          <span className="font-[Unna] text-dynamic-2xl text-primary">
+          <span className="font-[Unna] text-dynamic-2xl text-primary-500">
             $280/day
           </span>
-          <Button variant="secondary" size="lg" radius="md" asChild>
+          <Button variant="secondary" asChild>
             <Link href={"/"}>Book Now</Link>
           </Button>
         </div>

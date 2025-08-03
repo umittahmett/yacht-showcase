@@ -78,7 +78,7 @@ export default function BoatFilters({ onFiltersChange, className }: BoatFiltersP
               <div className="flex items-center justify-between w-full">
                 <span>{category.title}</span>
                 {filters[category.id as keyof BoatFilters]?.length > 0 && (
-                  <span className="ml-2 text-xs bg-accent text-white px-2 py-1 rounded-full">
+                  <span className="ml-2 text-xs bg-accent-500 text-white px-2 py-1 rounded-full">
                     {filters[category.id as keyof BoatFilters].length}
                   </span>
                 )}
@@ -133,7 +133,7 @@ export default function BoatFilters({ onFiltersChange, className }: BoatFiltersP
               <Filter className="w-4 h-4 mr-2" />
               Filters
               {getActiveFiltersCount() > 0 && (
-                <span className="ml-2 text-xs bg-accent text-white py-1 rounded-full">
+                <span className="ml-2 text-xs bg-accent-500 text-white py-1 rounded-full">
                   {getActiveFiltersCount()}
                 </span>
               )}
