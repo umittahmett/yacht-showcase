@@ -27,10 +27,10 @@ export default function BoatSearch({ onSearch, className }: BoatSearchProps) {
           placeholder="Search boats by name, type, or features..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10 w-full"
+          className="pl-10 h-12 sm:h-14 lg:h-[60px] w-full"
         />
       </div>
-      <Button type="submit"  size='lg' radius='md'>
+      <Button type="submit" size="lg" radius="md">
         Search
       </Button>
     </form>

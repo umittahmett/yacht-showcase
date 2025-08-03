@@ -126,14 +126,10 @@ export default function BoatFilters({ onFiltersChange, className }: BoatFiltersP
       </div>
 
       {/* Mobile View */}
-      <div className="lg:hidden">
+      <div className="lg:hidden flex justify-end w-full">
         <Sheet>
           <SheetTrigger asChild>
-            <Button
-              variant="outline"
-              radius="md"
-              className="w-full justify-start"
-            >
+            <Button variant="outline" radius="md" className="w-fit">
               <Filter className="w-4 h-4 mr-2" />
               Filters
               {getActiveFiltersCount() > 0 && (
