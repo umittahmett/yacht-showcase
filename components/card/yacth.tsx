@@ -7,12 +7,14 @@ import Link from 'next/link';
 
 const Yacth = () => {
   return (
-    <article className=" rounded-[20px] duration-200 bg-main-background border border-transparent hover:border-border-100">
-      <Image
-        src={Boat}
-        alt="Lorem Boat"
-        className="aspect-[3/2] object-cover w-full rounded-[20px]"
-      />
+    <article className=" rounded-[20px] duration-200 bg-main-background">
+      <Link href={"/boat-rental/1"}>
+        <Image
+          src={Boat}
+          alt="Lorem Boat"
+          className="aspect-[3/2] object-cover w-full rounded-[20px]"
+        />
+      </Link>
       <div className="p-5 sm:p-6 lg:p-[30px] pt-4 lg:pt-5 space-y-3 lg:space-y-4">
         <div className="flex items-center justify-between gap-2.5">
           <h3 className="text-dynamic-2xl text-primary leading-1.4">
@@ -24,17 +26,17 @@ const Yacth = () => {
         </div>
 
         <div className="flex items-center justify-between border-y border-border-100 gap-2.5 py-1.5">
-          <div className="flex items-center gap-0.5">
+          <div className="flex items-center gap-1.5">
             <Crop className="text-secondary" />
             <span className="text-text-color leading-1.4 text-sm">85” ft</span>
           </div>
-          <div className="flex items-center gap-0.5">
+          <div className="flex items-center gap-1.5">
             <Users className="text-secondary" />
             <span className="text-text-color leading-1.4 text-sm">
               10 Guest
             </span>
           </div>
-          <div className="flex items-center gap-0.5">
+          <div className="flex items-center gap-1.5">
             <Smile className="text-secondary" />
             <span className="text-text-color leading-1.4 text-sm">3 Crew</span>
           </div>
