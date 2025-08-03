@@ -20,8 +20,7 @@ const Header = () => {
   const navigationLinks = [
     { name: 'Home', href: '/', isActive: true },
     { name: 'About Us', href: '/about-us', isActive: false },
-    { name: 'Services', href: '/services', isActive: false },
-    { name: 'Boat Rental', href: '/pages', isActive: false },
+    { name: 'Boat Rental', href: '/boat-rental', isActive: false },
     { name: 'Contact Us', href: '/contact', isActive: false },
   ]
 
