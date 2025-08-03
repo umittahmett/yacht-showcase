@@ -30,7 +30,7 @@ export default function BoatSearch({ onSearch, className }: BoatSearchProps) {
           className="pl-10 h-12 sm:h-14 lg:h-[60px] w-full"
         />
       </div>
-      <Button type="submit" size="lg" radius="md">
+      <Button type="submit" size="lg">
         Search
       </Button>
     </form>

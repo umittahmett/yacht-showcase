@@ -129,7 +129,7 @@ export default function BoatFilters({ onFiltersChange, className }: BoatFiltersP
       <div className="lg:hidden flex justify-end w-full">
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="outline" radius="md" className="w-fit">
+            <Button variant="outline" className="w-fit">
               <Filter className="w-4 h-4 mr-2" />
               Filters
               {getActiveFiltersCount() > 0 && (
