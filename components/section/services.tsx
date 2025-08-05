@@ -55,16 +55,17 @@ const Services = () => {
             </div>
 
             <div className="rounded-[20px] absolute top-0 right-0 translate-y-1/3 translate-x-1/2 w-32 sm:w-40 h-40 sm:h-52 overflow-hidden">
-              <div className="bg-primary-500 p-3 sm:p-4 lg:p-5 !pb-0 text-center">
-                <div className="translate-y-[9px]">
+              <div className="absolute top-0 bg-black/30 size-full flex items-center justify-center left-0 p-3 sm:p-4 lg:p-5 text-center">
+                <div>
                   <span className="text-dynamic-2xl text-white font-[Unna]">
                     1,200+
                   </span>
-                  <div className="text-sm text-accent-500">
+                  <div className="font-medium text-dynamic-lg text-white">
                     <span>Happy Clients</span>
                   </div>
                 </div>
               </div>
+
               <div>
                 <Image
                   src={Boat}
