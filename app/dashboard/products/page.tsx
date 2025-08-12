@@ -56,7 +56,8 @@ export default async function Products() {
 
   return (
     <div className="container mx-auto pb-10">
-      <div className="ml-auto w-fit my-5">
+      <div className="flex items-center justify-between w-full my-5">
+        <h1 className="section-title">Products</h1>
           <Link href="/dashboard/product" >
             <Button>
                 Create
