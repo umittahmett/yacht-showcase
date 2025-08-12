@@ -197,6 +197,7 @@ export default async function ProductFormWrapper({
 
   console.log('pricingData:', pricingData);
   console.log('product:', productData);
+  console.log('product id', productData?.id)
 
-  return <DynamicForm languages={languages} groups={translatedGroups} />;
+  return <DynamicForm productId={productData?.id} languages={languages} groups={translatedGroups} />;
 }

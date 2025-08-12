@@ -1,6 +1,7 @@
 'use server'
 
 import { redirect } from 'next/navigation'
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@/utils/supabase/server'
 import path from 'path'
 import { mkdir, writeFile } from 'fs/promises'
@@ -174,4 +175,51 @@ export async function getProductData(productId: number) {
   }
 
   return product;
+}
+
+export async function deleteProducts(productIds: (number | string)[], redirectTo?: string) {
+  try {
+    const supabase = await createClient()
+
+    // Delete feature groups for all products
+    await Promise.all(
+      productFeatureGroups.map(async (group) => {
+        const { data: featuresData, error: featuresError } = await supabase
+          .from(`product_${group.group_name}`)
+          .delete()
+          .in('product_id', productIds);
+        
+        console.log(featuresData);
+        
+        if (featuresError) {
+          console.error(`Error deleting features for group ${group.group_name}:`, featuresError);
+        }
+      })
+    );
+
+    // Delete all products
+    const { error: deleteProductError } = await supabase
+      .from('products')
+      .delete()
+      .in('id', productIds);
+    
+    console.log(`Products ${productIds.join(', ')} Deleted`);
+    
+    if (deleteProductError) {
+      console.error('Error deleting products:', deleteProductError);
+      throw new Error('Error deleting products: ' + deleteProductError.message);
+    }
+
+    console.log(`Products ${productIds.join(', ')} deleted successfully`);
+    
+  } catch (error) {
+    console.log(error);
+    throw new Error('An error occurred while deleting products');
+  }
+
+  if (redirectTo) {
+    redirect(redirectTo);
+  } else {
+    revalidatePath('/dashboard/products');
+  }
 }

@@ -14,8 +14,8 @@ import { Button } from "@/components/ui/button";
 import clsx from "clsx";
 import { toSnakeCase } from "@/utils/text-to-snake-case";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle} from "../ui/alert-dialog";
-import { createProduct } from "@/app/dashboard/product/actions";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger} from "../ui/alert-dialog";
+import { createProduct, deleteProducts } from "@/app/dashboard/product/actions";
 import { productRenderFormControl } from "./product-render-form-control";
 import { buildSchemaFromFields, generateDefaultValues } from "@/lib/validation/schema-utils";
 import { FileUpload } from "../ui/file-upload";
@@ -24,28 +24,42 @@ import { Language } from "@/types";
 import { Group, GroupField } from "@/types/product";
 
 interface DynamicFormProps {
+  productId?: string | number
   languages: Language[]
   groups: Group[]
 }
 
-export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => {
+export const DynamicForm: React.FC<DynamicFormProps> = ({
+  languages,
+  groups,
+  productId,
+}) => {
   const [isFormReady, setIsFormReady] = useState<boolean>(false);
-  const [selectedLanguage, setSelectedLanguage] = useState<string>(languages?.[0]?.code ?? '');
-  const [pendingLanguage, setPendingLanguage] = useState<string>('');
-  const [isSwitchLanguageAlertOpen, setIsSwitchLanguageAlertOpen] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(
+    languages?.[0]?.code ?? ""
+  );
+  const [pendingLanguage, setPendingLanguage] = useState<string>("");
+  const [isSwitchLanguageAlertOpen, setIsSwitchLanguageAlertOpen] =
+    useState(false);
 
   const schemaWithFiles = useMemo(() => {
     const baseSchema = buildSchemaFromFields(groups);
     return baseSchema.extend({
-      images: z.array(
-      z.instanceof(File)
-        .refine(file => file.size <= 1 * 1024 * 1024, "Her bir dosya 5MB'dan küçük olmalı")
-      )
-      .min(1, "En az bir resim yüklemelisiniz")
-      .refine(
-      files => files.reduce((acc, file) => acc + file.size, 0) <= 5 * 1024 * 1024,
-      "Toplam dosya boyutu 5MB'dan küçük olmalı"
-      )
+      images: z
+        .array(
+          z
+            .instanceof(File)
+            .refine(
+              (file) => file.size <= 1 * 1024 * 1024,
+              "Her bir dosya 5MB'dan küçük olmalı"
+            )
+        )
+        .min(1, "En az bir resim yüklemelisiniz")
+        .refine(
+          (files) =>
+            files.reduce((acc, file) => acc + file.size, 0) <= 5 * 1024 * 1024,
+          "Toplam dosya boyutu 5MB'dan küçük olmalı"
+        ),
     });
   }, [groups]);
 
@@ -53,25 +67,23 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
     resolver: zodResolver(schemaWithFiles),
     defaultValues: {
       ...generateDefaultValues(groups),
-      images: []
+      images: [],
     },
   });
 
   const handleFileUpload = (files: File[]) => {
-    if (!files || files.length === 0){
+    if (!files || files.length === 0) {
       console.log("File upload is empty");
-      form.resetField('images', {
+      form.resetField("images", {
         defaultValue: [],
         keepDirty: false,
         keepTouched: false,
         keepError: false,
       });
-    }
-
-    else{
-      form.setValue('images', files, {
+    } else {
+      form.setValue("images", files, {
         shouldValidate: true,
-        shouldDirty: true
+        shouldDirty: true,
       });
     }
   };
@@ -92,38 +104,43 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
         setIsSwitchLanguageAlertOpen(true);
       } else {
         setSelectedLanguage(pendingLanguage);
-        setPendingLanguage('');
+        setPendingLanguage("");
       }
     }
-  }, [pendingLanguage, isSwitchLanguageAlertOpen, form.formState.isDirty, selectedLanguage]);
+  }, [
+    pendingLanguage,
+    isSwitchLanguageAlertOpen,
+    form.formState.isDirty,
+    selectedLanguage,
+  ]);
 
   const onSubmit = async (data: any) => {
     try {
       const featuresArray: Array<{
-        id?: number,
-        group_name: string,
+        id?: number;
+        group_name: string;
         fields: Array<{
-          id: number,
-          field_name: string,
-          field_type: string,
-          localizable: boolean,
-          value: any
-        }>
+          id: number;
+          field_name: string;
+          field_type: string;
+          localizable: boolean;
+          value: any;
+        }>;
       }> = [];
 
-      groups.forEach((group:Group) => {
-        const groupKey = group.name ?? ""
+      groups.forEach((group: Group) => {
+        const groupKey = group.name ?? "";
 
         const groupData = {
           id: group.id,
           group_name: groupKey,
           fields: [] as Array<{
-            id: number,
-            field_name: string,
-            field_type: string,
-            localizable: boolean,
-            value: any
-          }>
+            id: number;
+            field_name: string;
+            field_type: string;
+            localizable: boolean;
+            value: any;
+          }>,
         };
 
         group.fields.forEach((formField: any) => {
@@ -134,7 +151,7 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
             field_name: formField.field_name,
             field_type: formField.field_type,
             localizable: formField.localizable,
-            value: fieldValue
+            value: fieldValue,
           });
         });
 
@@ -147,7 +164,7 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
           formData.append("images", file);
         });
       }
-      console.log('data.images: ', data.images);
+      console.log("data.images: ", data.images);
 
       formData.append("features", JSON.stringify(featuresArray));
       formData.append("language", JSON.stringify(selectedLanguage));
@@ -163,7 +180,7 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
   return (
     <div className="relative w-full">
       <Select
-        onValueChange={(value:string)=>{
+        onValueChange={(value: string) => {
           setPendingLanguage(value);
         }}
         value={selectedLanguage}
@@ -173,10 +190,7 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
         </SelectTrigger>
         <SelectContent>
           {languages.map((lang) => (
-            <SelectItem
-              key={lang.id}
-              value={lang.code}
-            >
+            <SelectItem key={lang.id} value={lang.code}>
               {lang.name}
             </SelectItem>
           ))}
@@ -190,14 +204,10 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
         >
           <FormField
             control={form.control}
-            name='images'
+            name="images"
             render={({ field }) => (
-              <FormItem
-                className="text-base font-medium col-span-full"
-              >
-                <FormLabel>
-                  Product Images
-                </FormLabel>
+              <FormItem className="text-base font-medium col-span-full">
+                <FormLabel>Product Images</FormLabel>
                 <FormControl>
                   <FileUpload
                     onChange={(files) => {
@@ -211,20 +221,36 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
             )}
           />
 
-          {groups.map((group:Group) => (
+          {groups.map((group: Group) => (
             <div
-              className={clsx('border first:mt-4 border-neutral-200 shadow-sm rounded-lg relative bg-neutral-50 p-6 overflow-hidden lg:p-8', group.name?.includes('price') ? 'col-span-1' : 'col-span-full')}
+              className={clsx(
+                "border first:mt-4 border-neutral-200 shadow-sm rounded-lg relative bg-neutral-50 p-6 overflow-hidden lg:p-8",
+                group.name?.includes("price") ? "col-span-1" : "col-span-full"
+              )}
               key={group.title}
             >
               <h2 className="relative z-[1] text-lg font-bold pb-6 text-neutral-900">
                 {group.title}
               </h2>
 
-              <div className={clsx("relative z-[1] space-y-3 border-t border-neutral-300 grid gap-6 pt-6", group.name?.includes('price') ? 'grid-cols-1' : 'lg:grid-cols-2')}>
-                {group.fields.map((formField:GroupField) => {
-                  const fieldName = `${toSnakeCase(group.title)}.${formField.field_name}`;
-                  const isFieldDisabled = formField.localizable === false && selectedLanguage !== languages[0]?.code;
-                  const isCheckboxOrToggle = formField.field_type === "checkbox" || formField.field_type === "toggle";
+              <div
+                className={clsx(
+                  "relative z-[1] space-y-3 border-t border-neutral-300 grid gap-6 pt-6",
+                  group.name?.includes("price")
+                    ? "grid-cols-1"
+                    : "lg:grid-cols-2"
+                )}
+              >
+                {group.fields.map((formField: GroupField) => {
+                  const fieldName = `${toSnakeCase(group.title)}.${
+                    formField.field_name
+                  }`;
+                  const isFieldDisabled =
+                    formField.localizable === false &&
+                    selectedLanguage !== languages[0]?.code;
+                  const isCheckboxOrToggle =
+                    formField.field_type === "checkbox" ||
+                    formField.field_type === "toggle";
 
                   if (!isFieldDisabled) {
                     return (
@@ -244,7 +270,8 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
                                 "order-2":
                                   formField.field_type == "checkbox" ||
                                   formField.field_type == "toggle",
-                                  'opacity-50 cursor-not-allowed': isFieldDisabled
+                                "opacity-50 cursor-not-allowed":
+                                  isFieldDisabled,
                               })}
                             >
                               {formField.field_title}
@@ -265,7 +292,44 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
             </div>
           ))}
 
-          <div className="sticky col-span-full w-full z-10 !my-0 bg-white/10 opacity-100 shadow-sm border border-neutral-200 bottom-12 backdrop-blur-lg left-0 p-4 lg:p-5 rounded-t-lg flex items-center justify-end">
+          <div className="sticky col-span-full w-full z-10 !my-0 bg-white/10 opacity-100 shadow-sm border border-neutral-200 bottom-12 backdrop-blur-lg left-0 p-4 lg:p-5 rounded-t-lg flex items-center justify-between">
+            {productId && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    disabled={form.formState.isSubmitting}
+                    type="button"
+                    variant="danger"
+                  >
+                    Delete
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      your current product specifications.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogAction
+                      asChild
+                      onClick={() =>
+                        deleteProducts([productId], "/dashboard/products")
+                      }
+                    >
+                      <Button variant="danger">Delete</Button>
+                    </AlertDialogAction>
+
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+
             <Button
               disabled={form.formState.isSubmitting}
               type="submit"
@@ -291,19 +355,23 @@ export const DynamicForm:React.FC<DynamicFormProps> = ({languages, groups }) => 
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={()=>{
-              setPendingLanguage('');
-              setIsSwitchLanguageAlertOpen(false);
-            }}>
+            <AlertDialogCancel
+              onClick={() => {
+                setPendingLanguage("");
+                setIsSwitchLanguageAlertOpen(false);
+              }}
+            >
               Cancel
             </AlertDialogCancel>
 
-            <AlertDialogAction onClick={()=>{
-              setSelectedLanguage(pendingLanguage);
-              setPendingLanguage('');
-              form.reset();
-              setIsSwitchLanguageAlertOpen(false);
-            }}>
+            <AlertDialogAction
+              onClick={() => {
+                setSelectedLanguage(pendingLanguage);
+                setPendingLanguage("");
+                form.reset();
+                setIsSwitchLanguageAlertOpen(false);
+              }}
+            >
               Close Anyway
             </AlertDialogAction>
           </AlertDialogFooter>

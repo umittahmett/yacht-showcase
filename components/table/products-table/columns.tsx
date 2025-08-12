@@ -27,6 +27,8 @@ import {
 import { Checkbox } from "@/components/ui/checkbox"
 import Link from "next/link"
 import Image from "next/image"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { deleteProducts } from "@/app/dashboard/product/actions"
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -152,20 +154,49 @@ export const columns: ColumnDef<Product>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem asChild onClick={() => console.log('edit product', product.id)}
+            <DropdownMenuItem
+              asChild
+              onClick={() => console.log("edit product", product.id)}
             >
               <Link href={`/dashboard/product/${product.id}`}>Details</Link>
             </DropdownMenuItem>
             <DropdownMenuItem
-            className="text-red-600 hover:!text-red-600"
-              onClick={() => console.log('delete product', product.id)}
+              asChild
+              className="text-red-600 hover:!text-red-600"
             >
-              <Trash className="text-red-600" />
-              Delete
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <div className="flex items-center group hover:text-white hover:!bg-red-500 gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none">
+                    <Trash className="size-4 group-hover:text-white text-red-600" />
+                    Delete
+                  </div>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      your current product specifications.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogAction
+                      asChild
+                      onClick={() => deleteProducts([product.id])}
+                    >
+                      <Button variant="danger">Delete</Button>
+                    </AlertDialogAction>
+
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      )
+      );
     },
   },
 ]
