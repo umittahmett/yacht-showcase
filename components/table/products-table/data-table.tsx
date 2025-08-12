@@ -49,10 +49,10 @@ export function DataTable<TData, TValue>({
     console.log(rowSelection);
     const productIds = Object.keys(rowSelection).map(rowIndex => {
       const row = table.getRowModel().rows[parseInt(rowIndex)];
-      return row.original.id;
+      return (row.original as { id: number | string }).id;
     });
 
-    setSelectedProductIds(productIds)
+    setSelectedProductIds(productIds as string[])
     console.log('Selected Product IDs:', productIds);
   },[rowSelection])
 
