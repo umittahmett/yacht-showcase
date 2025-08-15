@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/utils/supabase/server'
 import path from 'path'
-import { mkdir, writeFile } from 'fs/promises'
+import { mkdir, writeFile, unlink } from 'fs/promises'
 
 const productFeatureGroups = [
   { product_feature_name: "product_pricing", group_name: "pricing" },
@@ -136,6 +136,28 @@ export async function createProduct(formData: any) {
   redirect('/dashboard/products')
 }
 
+export async function deleteImagesFromFolder(imageUrls: string[]) {
+  try {
+    const deletePromises = imageUrls.map(async (imageUrl) => {
+      try {
+        // URL'den direkt dosya yolunu oluştur
+        const filePath = path.join(process.cwd(), 'public', imageUrl)
+        await unlink(filePath)
+        console.log(`Deleted image: ${imageUrl}`)
+      } catch (err) {
+        console.error(`Error deleting image ${imageUrl}:`, err)
+        // Continue with other deletions even if one fails
+      }
+    })
+
+    await Promise.all(deletePromises)
+    console.log(`Successfully deleted ${imageUrls.length} images from folder`)
+  } catch (error) {
+    console.error('Error deleting images from folder:', error)
+    throw new Error('Failed to delete images from folder: ' + error)
+  }
+}
+
 export async function getProductData(productId: number) {
 
   const supabase = await createClient()
@@ -181,7 +203,30 @@ export async function deleteProducts(productIds: (number | string)[], redirectTo
   try {
     const supabase = await createClient()
 
-    // Delete feature groups for all products
+    const { data: productsData, error: fetchError } = await supabase
+      .from('products')
+      .select('images')
+      .in('id', productIds);
+
+    if (fetchError) {
+      console.error('Error fetching product images:', fetchError);
+    } else {
+      const allImages: string[] = [];
+      productsData?.forEach(product => {
+        if (product.images && Array.isArray(product.images)) {
+          allImages.push(...product.images);
+        }
+      });
+
+      if (allImages.length > 0) {
+        try {
+          await deleteImagesFromFolder(allImages);
+        } catch (imageDeleteError) {
+          console.error('Error deleting images from folder:', imageDeleteError);
+        }
+      }
+    }
+
     await Promise.all(
       productFeatureGroups.map(async (group) => {
         const { data: featuresData, error: featuresError } = await supabase
@@ -202,8 +247,6 @@ export async function deleteProducts(productIds: (number | string)[], redirectTo
       .from('products')
       .delete()
       .in('id', productIds);
-    
-    console.log(`Products ${productIds.join(', ')} Deleted`);
     
     if (deleteProductError) {
       console.error('Error deleting products:', deleteProductError);
