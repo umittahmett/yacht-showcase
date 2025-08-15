@@ -15,6 +15,7 @@ import clsx from "clsx";
 import { toSnakeCase } from "@/utils/text-to-snake-case";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger} from "../ui/alert-dialog";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { createProduct, deleteProducts } from "@/app/dashboard/product/actions";
 import { productRenderFormControl } from "./product-render-form-control";
 import { buildSchemaFromFields, generateDefaultValues } from "@/lib/validation/schema-utils";
@@ -22,17 +23,24 @@ import { FileUpload } from "../ui/file-upload";
 import { z } from "zod";
 import { Language } from "@/types";
 import { Group, GroupField } from "@/types/product";
+import Image from "next/image";
+import { X, RotateCcw, AlertCircleIcon } from "lucide-react";
 
 interface DynamicFormProps {
+  intent: 'create' | 'update'
   productId?: string | number
+  images?: string[]
   languages: Language[]
   groups: Group[]
 }
+
 
 export const DynamicForm: React.FC<DynamicFormProps> = ({
   languages,
   groups,
   productId,
+  images,
+  intent,
 }) => {
   const [isFormReady, setIsFormReady] = useState<boolean>(false);
   const [selectedLanguage, setSelectedLanguage] = useState<string>(
@@ -41,33 +49,50 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
   const [pendingLanguage, setPendingLanguage] = useState<string>("");
   const [isSwitchLanguageAlertOpen, setIsSwitchLanguageAlertOpen] =
     useState(false);
+  const [imagesToDelete, setImagesToDelete] = useState<string[]>([]);
 
   const schemaWithFiles = useMemo(() => {
     const baseSchema = buildSchemaFromFields(groups);
     return baseSchema.extend({
-      images: z
-        .array(
-          z
-            .instanceof(File)
-            .refine(
-              (file) => file.size <= 1 * 1024 * 1024,
-              "Her bir dosya 5MB'dan küçük olmalı"
+      images: intent === 'update' 
+        ? z
+            .array(
+              z
+                .instanceof(File)
+                .refine(
+                  (file) => file.size <= 1 * 1024 * 1024,
+                  "Her bir dosya 5MB'dan küçük olmalı"
+                )
             )
-        )
-        .min(1, "En az bir resim yüklemelisiniz")
-        .refine(
-          (files) =>
-            files.reduce((acc, file) => acc + file.size, 0) <= 5 * 1024 * 1024,
-          "Toplam dosya boyutu 5MB'dan küçük olmalı"
-        ),
+            .optional()
+            .refine(
+              (files) => !files || files.reduce((acc, file) => acc + file.size, 0) <= 5 * 1024 * 1024,
+              "Toplam dosya boyutu 5MB'dan küçük olmalı"
+            )
+        : z
+            .array(
+              z
+                .instanceof(File)
+                .refine(
+                  (file) => file.size <= 1 * 1024 * 1024,
+                  "Her bir dosya 5MB'dan küçük olmalı"
+                )
+            )
+            .min(1, "En az bir resim yüklemelisiniz")
+            .refine(
+              (files) =>
+                files.reduce((acc, file) => acc + file.size, 0) <= 5 * 1024 * 1024,
+              "Toplam dosya boyutu 5MB'dan küçük olmalı"
+            ),
     });
-  }, [groups]);
+  }, [groups, intent]);
 
   const form = useForm({
     resolver: zodResolver(schemaWithFiles),
     defaultValues: {
       ...generateDefaultValues(groups),
       images: [],
+
     },
   });
 
@@ -164,12 +189,16 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
           formData.append("images", file);
         });
       }
-      console.log("data.images: ", data.images);
 
       formData.append("features", JSON.stringify(featuresArray));
       formData.append("language", JSON.stringify(selectedLanguage));
 
-      await createProduct(formData);
+      if (intent === "create") {
+        await createProduct(formData);
+      } else {
+        console.log("update product formData: ", formData);
+        console.log("images to delete: ", imagesToDelete);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -199,7 +228,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
 
       <Form {...form}>
         <form
-          className="z-10 grid grid-cols-3 gap-10 w-full"
+          className="z-10 grid grid-cols-3 gap-10 w-full pb-8"
           onSubmit={form.handleSubmit(onSubmit)}
         >
           <FormField
@@ -220,6 +249,64 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
               </FormItem>
             )}
           />
+          {images && imagesToDelete.length > 0 && (
+            <div className="col-span-full">
+              <Alert variant="default">
+                <AlertCircleIcon />
+                <AlertTitle>Alert</AlertTitle>
+                <AlertDescription>
+                  {imagesToDelete.length} image
+                  {imagesToDelete.length > 1 ? "s" : ""} marked for deletion
+                  will be permanently removed when you submit the form.
+                </AlertDescription>
+              </Alert>
+            </div>
+          )}
+          
+          {images && (
+            <div className="col-span-full items-center gap-5 grid grid-cols-6 w-full">
+              {images.map((image, idx) => (
+                <div
+                  key={idx}
+                  className="relative w-full border border-neutral-200 rounded-md"
+                >
+                  <Image
+                    width={100}
+                    height={100}
+                    src={image}
+                    alt={`Product Image ${idx}`}
+                    className={clsx("size-full aspect-square rounded-md", {
+                      "opacity-50 cursor-not-allowed":
+                        imagesToDelete.includes(image),
+                    })}
+                  />
+                  {images.length > 1 && (
+                    <Button
+                      onClick={() => {
+                        if (imagesToDelete.includes(image)) {
+                          setImagesToDelete(
+                            imagesToDelete.filter((img) => img !== image)
+                          );
+                        } else {
+                          if (imagesToDelete.length !== images.length-1) {
+                            setImagesToDelete([...imagesToDelete, image]);
+                          }
+                        }
+                      }}
+                      size="iconSmall"
+                      variant={
+                        imagesToDelete.includes(image) ? "default" : "danger"
+                      }
+                      type="button"
+                      className="absolute -top-2.5 -right-2.5"
+                    >
+                      {imagesToDelete.includes(image) ? <RotateCcw /> : <X />}
+                    </Button>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
 
           {groups.map((group: Group) => (
             <div
@@ -331,11 +418,14 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
             )}
 
             <Button
-              disabled={form.formState.isSubmitting}
+              disabled={
+                form.formState.isSubmitting ||
+                (!form.formState.isDirty && imagesToDelete.length === 0)
+              }
               type="submit"
               className="block"
             >
-              Save and Publish
+              {intent === "create" ? "Save and Publish" : "Apply Changes"}
             </Button>
           </div>
         </form>

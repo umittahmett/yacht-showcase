@@ -179,7 +179,6 @@ export default async function ProductFormWrapper({
       
       pricingData = pricingData.map((pricingType: Group) => {
         const pricingTypeData:PricingFeatureField[] | any = pricingFeatures.filter((field: PricingFeatureField) => field.pricing_type_id === pricingType.id);
-        console.log('pricingTypeData for', pricingType.id, ':', pricingTypeData);
         return {
           ...pricingType,
           fields: pricingType.fields.map((field)=>{
@@ -194,10 +193,11 @@ export default async function ProductFormWrapper({
     }
   }
   translatedGroups.push(...pricingData);
+  
+  let intent: 'create' | 'update' = 'create';
+  if (slug && slug != 'new') {
+    intent = 'update';
+  }
 
-  console.log('pricingData:', pricingData);
-  console.log('product:', productData);
-  console.log('product id', productData?.id)
-
-  return <DynamicForm productId={productData?.id} languages={languages} groups={translatedGroups} />;
+  return <DynamicForm intent={intent} images={productData?.images} productId={productData?.id} languages={languages} groups={translatedGroups} />;
 }
