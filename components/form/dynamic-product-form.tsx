@@ -16,7 +16,7 @@ import { toSnakeCase } from "@/utils/text-to-snake-case";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger} from "../ui/alert-dialog";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
-import { createProduct, deleteProducts } from "@/app/dashboard/product/actions";
+import { createProduct, deleteProducts, updateProduct } from "@/app/dashboard/product/actions";
 import { productRenderFormControl } from "./product-render-form-control";
 import { buildSchemaFromFields, generateDefaultValues } from "@/lib/validation/schema-utils";
 import { FileUpload } from "../ui/file-upload";
@@ -33,7 +33,6 @@ interface DynamicFormProps {
   languages: Language[]
   groups: Group[]
 }
-
 
 export const DynamicForm: React.FC<DynamicFormProps> = ({
   languages,
@@ -192,11 +191,18 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
 
       formData.append("features", JSON.stringify(featuresArray));
       formData.append("language", JSON.stringify(selectedLanguage));
+      if (intent == 'update') {
+        formData.append("product_id", JSON.stringify(productId));
+
+        if (imagesToDelete.length > 0) {
+          formData.append('images_to_delete', JSON.stringify(imagesToDelete)) 
+        }
+      }
 
       if (intent === "create") {
         await createProduct(formData);
       } else {
-        console.log("update product formData: ", formData);
+        await updateProduct(formData)
         console.log("images to delete: ", imagesToDelete);
       }
     } catch (error) {

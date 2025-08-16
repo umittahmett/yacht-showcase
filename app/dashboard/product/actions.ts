@@ -16,11 +16,44 @@ const productFeatureGroups = [
   { product_feature_name: "product_water_sports", group_name: "water_sports" },
 ];
 
+export async function uploadImages(images:File[], productId:string|number) {
+  if (images && images.length > 0) {
+    const uploadsDir = path.join(process.cwd(), 'public', 'uploads', 'products')
+
+    try {
+      await mkdir(uploadsDir, { recursive: true })
+    } catch (err) {
+      console.log('Directory already exists or creation failed:', err)
+    }
+
+    const uploadPromises = images.map(async (file, index) => {
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${productId}-${Date.now()}-${index}.${fileExt}`
+      const filePath = path.join(uploadsDir, fileName)
+
+      const arrayBuffer = await file.arrayBuffer()
+      const buffer = Buffer.from(arrayBuffer)
+
+      await writeFile(filePath, buffer)
+      const publicUrl = `/uploads/products/${fileName}`
+
+      return publicUrl
+    })
+
+    try {
+      const imageUrls = await Promise.all(uploadPromises)
+      return imageUrls
+    } catch (uploadErr) {
+      throw new Error('Image upload error: ' + uploadErr)
+    }
+  }
+} 
+
 export async function createProduct(formData: any) {
   const supabase = await createClient()
   const features = JSON.parse(formData.get('features'))
   const images = formData.getAll('images') as File[]
-  let imageUrls: string[] = []
+  let imageUrls: string[] | undefined = []
   const rawLang = formData.get('language')
   const language = typeof rawLang === 'string' ? rawLang.replace(/^"|"$/g, '') : null
 
@@ -41,38 +74,10 @@ export async function createProduct(formData: any) {
 
   const newProductId = data[0].id;
 
-  if (images && images.length > 0) {
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads', 'products')
+  imageUrls = await uploadImages(images, newProductId)
 
-    try {
-      await mkdir(uploadsDir, { recursive: true })
-    } catch (err) {
-      console.log('Directory already exists or creation failed:', err)
-    }
 
-    const uploadPromises = images.map(async (file, index) => {
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${newProductId}-${Date.now()}-${index}.${fileExt}`
-      const filePath = path.join(uploadsDir, fileName)
-
-      const arrayBuffer = await file.arrayBuffer()
-      const buffer = Buffer.from(arrayBuffer)
-
-      await writeFile(filePath, buffer)
-
-      const publicUrl = `/uploads/products/${fileName}`
-
-      return publicUrl
-    })
-
-    try {
-      imageUrls = await Promise.all(uploadPromises)
-    } catch (uploadErr) {
-      throw new Error('Image upload error: ' + uploadErr)
-    }
-  }
-
-  if (imageUrls.length > 0) {
+  if (imageUrls && imageUrls.length > 0) {
     const { error: updateError } = await supabase
       .from('products')
       .update({ images: imageUrls })
@@ -266,3 +271,106 @@ export async function deleteProducts(productIds: (number | string)[], redirectTo
     revalidatePath('/dashboard/products');
   }
 }
+
+export async function updateProduct(formData:any) {
+  const supabase = await createClient()
+  const productId = formData.get('product_id')
+  const imagesToDelete:string[] = JSON.parse(formData.get('images_to_delete'))
+  const newImages = formData.getAll('images') as File[] 
+  const features = JSON.parse(formData.get('features'))
+
+  try {
+    // Check if product exists and get current images
+    const { data: existingProduct, error: fetchError } = await supabase
+      .from('products')
+      .select('id, images')
+      .eq('id', productId)
+      .single()
+
+    if (fetchError || !existingProduct) {
+      throw new Error(`Product with ID ${productId} not found`)
+    }
+
+    // Update Images
+    if (imagesToDelete) {
+      await deleteImagesFromFolder(imagesToDelete);
+    }
+    const updatedImages: string[] = []
+    const imageUrls: string[] | undefined = await uploadImages(newImages, productId)
+    console.log('imageUrls:', imageUrls)
+    if (imageUrls) {updatedImages.push(...imageUrls)}
+    const remainingImages = existingProduct.images.filter((image:string) => 
+      !imagesToDelete?.includes(image)
+    )
+    updatedImages.push(...remainingImages)
+
+    if (imageUrls && imageUrls.length > 0 || imagesToDelete && imagesToDelete.length > 0) {
+      const { error: updateError } = await supabase
+        .from('products')
+        .update({ images: updatedImages })
+        .eq('id', productId)
+
+      if (updateError) {
+        throw new Error('Error updating product with images: ' + updateError.message)
+      }
+    }
+
+    const insertTasks = features.map((feature: any) => {
+      
+      if((feature.group_name.endsWith('_prices'))){
+        const updatePromises = feature.fields.map((field: any) => 
+          supabase
+            .from('product_pricing')
+            .update({ value: field.value })
+            .eq('product_id', productId)
+            .eq('pricing_type_id', feature.id)
+            .eq('pricing_period_id', field.id)
+            .select()
+            .then((results) => {
+              console.log("PRICE UPDATE ERROR:", results.error);
+            })
+        )
+
+        return Promise.all(updatePromises)
+          .then((results) => {
+            results.forEach((result, index) => {
+              if (result && result.error) {
+                throw new Error(`Error updating feature for field ${feature.fields[index].id}: ${result.error.message}`);
+              }
+            });
+          });
+      }
+
+      else {
+        const updatePromises = feature.fields.map((field: any) => 
+          supabase
+            .from(`product_${feature.group_name}`)
+            .update({ value: field.value })
+            .eq('product_id', productId)
+            .eq('feature_id', field.id)
+            .select()
+            .then((results) => {
+              console.log("ERROR:", results.error);
+            })
+        );
+
+        return Promise.all(updatePromises)
+          .then((results) => {
+            results.forEach((result, index) => {
+              if (result && result.error) {
+                throw new Error(`Error updating feature for field ${feature.fields[index].id}: ${result.error.message}`);
+              }
+            });
+          });
+      }
+    });
+
+    await Promise.all(insertTasks);
+    
+  } catch (error) {
+    throw new Error(`An error occurred while updating product: ${error}`);
+  }
+  
+  redirect('/dashboard/products')
+}
+
