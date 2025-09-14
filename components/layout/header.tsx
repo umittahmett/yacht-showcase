@@ -13,19 +13,22 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '../ui/sheet'
+import { usePathname } from 'next/navigation'
+import clsx from 'clsx'
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const pathname = usePathname()
 
   const navigationLinks = [
-    { name: 'Home', href: '/', isActive: true },
-    { name: 'About Us', href: '/about-us', isActive: false },
-    { name: 'Boat Rental', href: '/products', isActive: false },
-    { name: 'Contact Us', href: '/contact', isActive: false },
+    { name: 'Home', href: '/'},
+    { name: 'About Us', href: '/about-us'},
+    { name: 'Boat Rental', href: '/products'},
+    { name: 'Contact Us', href: '/contact'},
   ]
 
   return (
-    <header className="bg-white py-4 sm:py-5 lg:py-6">
+    <header className="bg-white py-4 sm:py-5 lg:py-6 border-b">
       <div className="container flex items-center justify-between">
         <Link href='/'>
           <Image src={Logo} alt="Denizdebirhafta Logo" className="w-fit h-10" />
@@ -37,7 +40,10 @@ const Header = () => {
             <Link
               key={link.name}
               href={link.href}
-              className="font-[Unna] text-dynamic-base tracking-tight uppercase leading-1.1 hover:text-accent-500 duration-200"
+              prefetch={false}
+              className={clsx("font-[Unna] text-dynamic-base tracking-wide uppercase leading-1.1 hover:text-accent-500 duration-200", {
+                "text-accent-500 font-bold": link.href === pathname
+              })}
             >
               {link.name}
             </Link>
@@ -77,6 +83,7 @@ const Header = () => {
                   <Link
                     key={link.name}
                     href={link.href}
+                    prefetch={false}
                     onClick={() => setIsOpen(false)}
                     className="font-[Unna] stracking-tight uppercase leading-1.1 hover:text-secondary-500 duration-200 text-dynamic-lg"
                   >
