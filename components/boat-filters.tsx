@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   Accordion, 
   AccordionContent, 
@@ -16,113 +16,183 @@ import {
   SheetTitle, 
   SheetTrigger 
 } from '@/components/ui/sheet';
-import { boatFilters, type BoatFilters, initialBoatFilters } from '@/lib/data/boat-filters';
-import { X, Filter } from 'lucide-react';
+import { Brush, BrushIcon, FilterIcon, Trash2, X } from 'lucide-react';
+import { FilterItem } from '@/types';
+import { DualRangeSlider } from './ui/dual-range-slider';
+import { useDebounce } from 'use-debounce';
+import { Input } from './ui/input';
 
 interface BoatFiltersProps {
-  onFiltersChange?: (filters: BoatFilters) => void;
+  onFiltersChange?: (filters: Record<string, any>) => void;
   className?: string;
+  initialFilters?: FilterItem[];
 }
 
-export default function BoatFilters({ onFiltersChange, className }: BoatFiltersProps) {
-  const [filters, setFilters] = useState<BoatFilters>(initialBoatFilters);
-
-  const handleFilterChange = (category: keyof BoatFilters, value: string, checked: boolean) => {
-    const newFilters = { ...filters };
-    
-    if (checked) {
-      newFilters[category] = [...newFilters[category], value];
-    } else {
-      newFilters[category] = newFilters[category].filter(item => item !== value);
-    }
-    
-    setFilters(newFilters);
-    onFiltersChange?.(newFilters);
-  };
-
-  const clearAllFilters = () => {
-    setFilters(initialBoatFilters);
-    onFiltersChange?.(initialBoatFilters);
-  };
-
-  const getActiveFiltersCount = () => {
-    return Object.values(filters).reduce((total, category) => total + category.length, 0);
-  };
-
-  const FilterContent = () => (
-    <div className="space-y-4 overflow-y-auto p-4 pt-0">
+const FilterContent = ({ filters, priceRange, setPriceRange, maxPrice, appliedFilters, handleFilterChange, clearAllFilters }: {
+  filters: FilterItem[];
+  priceRange: number[];
+  setPriceRange: (value: number[]) => void;
+  maxPrice: number;
+  appliedFilters: Record<string, any>;
+  handleFilterChange: (filterId: string, value: string, checked: boolean) => void;
+  clearAllFilters?: () => void;
+}) => (
+    <div className="p-4 pt-0">
       <div className="flex items-center justify-between">
-        <h3 className="hidden lg:block text-lg font-semibold text-text-color">
+        <h3 className="hidden lg:block text-xl font-semibold text-text-color">
           Filters
         </h3>
-        {getActiveFiltersCount() > 0 && (
-          <Button onClick={clearAllFilters}>
-            <X className="w-4 h-4 mr-1" />
+        {(Object.keys(appliedFilters).length > 0 || priceRange[0] !== 0 || priceRange[1] !== maxPrice) && (
+          <Button variant="outline" size='sm' onClick={() => clearAllFilters?.() }>
+            <Trash2 className="w-4 h-4 mr-1" />
             Clear all
           </Button>
         )}
       </div>
 
       <Accordion
-        defaultValue={boatFilters.map((filter) => filter.id)}
         type="multiple"
         className="w-full"
+        defaultValue={filters?.map((filter) => filter.id) ?? []}
       >
-        {boatFilters.map((category) => (
+        {filters?.map((filterItem, index) => (
           <AccordionItem
-            key={category.id}
-            value={category.id}
+            key={index}
+            value={filterItem.id}
             className="border-b border-gray-300"
           >
             <AccordionTrigger className="text-left">
               <div className="flex items-center justify-between w-full">
-                <span>{category.title}</span>
-                {filters[category.id as keyof BoatFilters]?.length > 0 && (
+                <span>{filterItem.label}</span>
+                {appliedFilters[filterItem.id]?.length > 0 && (
                   <span className="ml-2 text-xs bg-accent-500 text-white px-2 py-1 rounded-full">
-                    {filters[category.id as keyof BoatFilters].length}
+                    {appliedFilters[filterItem.id]?.length}
                   </span>
                 )}
               </div>
             </AccordionTrigger>
             <AccordionContent>
-              <div className="space-y-3 pt-2">
-                {category.options.map((option) => (
-                  <div key={option.id} className="flex items-center space-x-2">
-                    <Checkbox
-                      className='max-lg:size-5'
-                      id={option.id}
-                      checked={filters[
-                        category.id as keyof BoatFilters
-                      ]?.includes(option.value as string)}
-                      onCheckedChange={(checked) =>
-                        handleFilterChange(
-                          category.id as keyof BoatFilters,
-                          option.value as string,
-                          checked as boolean
-                        )
-                      }
-                    />
-                    <label
-                      htmlFor={option.id}
-                      className="text-base lg:text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-                    >
-                      {option.label}
-                    </label>
+              <div className="*:py-1.5 pt-2 relative">
+                {filterItem.type === 'range' && typeof filterItem.items === 'object' && 'min' in filterItem.items ? (
+                  <div className="space-y-4 py-2">
+                    <div className="flex gap-1 items-center">
+                      <Input
+                        className='w-full'
+                        onChange={(e) => setPriceRange([Number(e.target.value), priceRange?.[1] ?? 0])} 
+                        value={priceRange?.[0] ?? 0}
+                      />
+                      <div>-</div>
+                      <Input
+                        className='w-full'
+                        onChange={(e) => setPriceRange([priceRange?.[0] ?? 0, Number(e.target.value)])} 
+                        value={priceRange?.[1] ?? 0}
+                      />
+                    </div>
+                    <div className="relative px-2">
+                      <DualRangeSlider
+                        value={priceRange}
+                        onValueChange={setPriceRange}
+                        min={0}
+                        max={maxPrice}
+                        step={1}
+                        className="w-full"
+                      />
+                    </div>
                   </div>
-                ))}
+                ) : ( 
+                  Array.isArray(filterItem.items) && filterItem.items.map((item) => (
+                    <div key={item.id} className="flex items-center space-x-2 cursor-pointer">
+                      <Checkbox
+                        className='max-lg:size-5 !cursor-pointer'
+                        id={item.id}
+                        checked={appliedFilters[filterItem.id]?.includes(item.value as string) || false}
+                        onCheckedChange={(checked) =>
+                          handleFilterChange(
+                            filterItem.id,
+                            item.value as string,
+                            checked as boolean
+                          )
+                        }
+                      />
+                      <label
+                        htmlFor={item.id}
+                        className="text-base text-gray-700 lg:text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                      >
+                        {item.label}
+                      </label>
+                    </div>
+                  ))
+                )}
               </div>
             </AccordionContent>
           </AccordionItem>
         ))}
       </Accordion>
     </div>
-  );
+);
+
+export default function BoatFilters({ onFiltersChange, className, initialFilters }: BoatFiltersProps) {
+  const [filters, setFilters] = useState<FilterItem[]>(initialFilters as FilterItem[] );
+  const maxPrice = (filters?.find(f => f.id === 'price-range')?.items as { max: number })?.max || 1000000;
+  const [priceRange, setPriceRange] = useState([0, maxPrice]);
+  const [debouncedValue] = useDebounce(priceRange, 300);
+  const [appliedFilters, setAppliedFilters] = useState<Record<string, any>>({});
+
+  const clearAllFilters = () => {
+    setAppliedFilters({});
+    setPriceRange([0, maxPrice]);
+    onFiltersChange?.({});
+  };
+
+  // Handle filter changes for checkboxes
+  const handleFilterChange = (filterId: string, value: string, checked: boolean) => {
+    setAppliedFilters(prev => {
+      const currentValues = prev[filterId] || [];
+      let newValues;
+      
+      if (checked) {
+        newValues = [...currentValues, value];
+      } else {
+        newValues = currentValues.filter((v: string) => v !== value);
+      }
+      
+      if (newValues.length === 0) {
+        const { [filterId]: removed, ...rest } = prev;
+        return rest;
+      }
+
+      return {
+        ...prev,
+        [filterId]: newValues
+      };
+    });
+  };
+  
+  const handlePriceRangeChange = (newRange: number[]) => {
+    setPriceRange(newRange);
+  };
+
+  useEffect(() => {
+    const finalFilters = {
+      ...appliedFilters,
+      'price-range': debouncedValue
+    };
+    onFiltersChange?.(finalFilters);
+  }, [appliedFilters, debouncedValue]);
 
   return (
-    <>
+    <div>
       {/* Desktop View */}
       <div className={`hidden lg:block ${className}`}>
-        <FilterContent />
+        <FilterContent 
+          filters={filters}
+          priceRange={priceRange}
+          setPriceRange={handlePriceRangeChange}
+          maxPrice={maxPrice}
+          appliedFilters={appliedFilters}
+          handleFilterChange={handleFilterChange} 
+          clearAllFilters={clearAllFilters}
+        />
       </div>
 
       {/* Mobile View */}
@@ -130,23 +200,26 @@ export default function BoatFilters({ onFiltersChange, className }: BoatFiltersP
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="outline" className="w-fit">
-              <Filter className="w-4 h-4 mr-2" />
+              <FilterIcon className="w-4 h-4 mr-2" />
               Filters
-              {getActiveFiltersCount() > 0 && (
-                <span className="ml-2 text-xs bg-accent-500 text-white py-1 rounded-full">
-                  {getActiveFiltersCount()}
-                </span>
-              )}
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="bg-white text-black w-full">
             <SheetHeader>
               <SheetTitle>Filters</SheetTitle>
             </SheetHeader>
-            <FilterContent />
+            <FilterContent 
+              filters={filters}
+              priceRange={priceRange}
+              setPriceRange={handlePriceRangeChange}
+              maxPrice={maxPrice}
+              appliedFilters={appliedFilters}
+              handleFilterChange={handleFilterChange}
+              clearAllFilters={clearAllFilters}
+            />
           </SheetContent>
         </Sheet>
       </div>
-    </>
+    </div>
   );
-} 
+}
