@@ -20,7 +20,7 @@ const DualRangeSlider = React.forwardRef<
     <div 
       className="relative w-full"
       style={{ 
-        zIndex: 9999,
+        zIndex: 50,
         isolation: 'isolate'
       }}
     >
