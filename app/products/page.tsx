@@ -93,7 +93,7 @@ const ProductsPage = () => {
             <BoatSearch onSearch={handleSearch} initialQuery={searchParams.get('q') ?? ''} />
 
             <div className="lg:hidden">
-              <BoatFilters />
+              {filters && filters.length > 0 && <BoatFilters onFiltersChange={(f) => applyFilters(f)} initialFilters={filters} />}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

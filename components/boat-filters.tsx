@@ -11,12 +11,13 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { 
   Sheet, 
+  SheetClose, 
   SheetContent, 
   SheetHeader, 
   SheetTitle, 
   SheetTrigger 
 } from '@/components/ui/sheet';
-import { Brush, BrushIcon, FilterIcon, Trash2, X } from 'lucide-react';
+import { FilterIcon, Trash2 } from 'lucide-react';
 import { FilterItem } from '@/types';
 import { DualRangeSlider } from './ui/dual-range-slider';
 import { useDebounce } from 'use-debounce';
@@ -37,9 +38,9 @@ const FilterContent = ({ filters, priceRange, setPriceRange, maxPrice, appliedFi
   handleFilterChange: (filterId: string, value: string, checked: boolean) => void;
   clearAllFilters?: () => void;
 }) => (
-    <div className="p-4 pt-0">
-      <div className="flex items-center justify-between">
-        <h3 className="hidden lg:block text-xl font-semibold text-text-color">
+    <div className="p-4 pt-0 h-[calc(100vh-40px)] pb-20 overflow-y-auto">
+      <div className="items-center justify-between hidden lg:flex">
+        <h3 className="text-xl font-semibold text-text-color">
           Filters
         </h3>
         {(Object.keys(appliedFilters).length > 0 || priceRange[0] !== 0 || priceRange[1] !== maxPrice) && (
@@ -49,7 +50,6 @@ const FilterContent = ({ filters, priceRange, setPriceRange, maxPrice, appliedFi
           </Button>
         )}
       </div>
-
       <Accordion
         type="multiple"
         className="w-full"
@@ -204,8 +204,8 @@ export default function BoatFilters({ onFiltersChange, className, initialFilters
               Filters
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="bg-white text-black w-full">
-            <SheetHeader>
+          <SheetContent side="left" className="bg-white text-black w-full gap-0">
+            <SheetHeader className='border-b'>
               <SheetTitle>Filters</SheetTitle>
             </SheetHeader>
             <FilterContent 
@@ -214,9 +214,13 @@ export default function BoatFilters({ onFiltersChange, className, initialFilters
               setPriceRange={handlePriceRangeChange}
               maxPrice={maxPrice}
               appliedFilters={appliedFilters}
-              handleFilterChange={handleFilterChange}
+              handleFilterChange={handleFilterChange} 
               clearAllFilters={clearAllFilters}
             />
+
+          <SheetClose className='absolute bottom-4 right-4 z-50'>
+            <Button>Apply</Button>
+          </SheetClose>
           </SheetContent>
         </Sheet>
       </div>
