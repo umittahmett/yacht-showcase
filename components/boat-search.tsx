@@ -8,10 +8,11 @@ import { Search } from 'lucide-react';
 interface BoatSearchProps {
   onSearch?: (query: string) => void;
   className?: string;
+  initialQuery?: string;
 }
 
-export default function BoatSearch({ onSearch, className }: BoatSearchProps) {
-  const [searchQuery, setSearchQuery] = useState('');
+export default function   BoatSearch({ onSearch, className, initialQuery }: BoatSearchProps) {
+  const [searchQuery, setSearchQuery] = useState(initialQuery ?? '');
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
