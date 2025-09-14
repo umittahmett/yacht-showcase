@@ -59,3 +59,10 @@ export interface ContentCardProps{
   content: string
   reverse?: boolean
 }
+
+export interface FilterItem {
+  id: string;
+  label: string;
+  type: 'checkbox' | 'range';
+  items: { id: string; label: string; value: string; }[] | { min: number; max: number; };
+}
