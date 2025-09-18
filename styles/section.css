@@ -21,10 +21,14 @@
     &.title-light{
       @apply text-white
     }
+
+    &.title-sm{
+      @apply text-dynamic-4xl leading-1.4
+    }
   }
 
   .section-content {
-    @apply text-dynamic-base leading-1.6 text-text-color mt-3 sm:mt-4 lg:mt-5;
+    @apply text-dynamic-base leading-1.6 *:!text-text-color !text-text-color mt-3 sm:mt-4 lg:mt-5;
 
     &.content-light{
       @apply text-white
