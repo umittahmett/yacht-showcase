@@ -2,10 +2,41 @@
 export interface Product {
   id: number;
   images: string[];
+  coverImage?: string;
   status: string;
   created_at: string;
   features: ProductFeature[]
 }
+
+export interface DetailedProduct {
+  id: string;
+  title: string;
+  images: string[];
+  coverImage?: string;
+  status: boolean;
+  created_at: string;
+  features: ProductFeatureGroup[];
+  pricing: PricingFeature[];
+}
+
+export interface PricingFeature {
+  name: string;
+  title: string;
+  fields: {title: string, value: number}[];
+}
+
+export interface ProductFeatureGroup {
+  name: string;
+  title: string;
+  fields: ProductFeatureField[];
+}
+
+export interface ProductFeatureField {
+  id: number;
+  title: string;
+  value: string;
+}
+
 
 export interface PricingFeatureField {
 created_at:string
@@ -40,17 +71,18 @@ export interface ProductFeatureField {
 export interface PricingType {
   id: number;
   field_name: string;
-  created_at: string;
+  created_at?: string;
   name?:string
   language_code?:string
+  pricing_types_translations: {name:string}[]
 }
 
 export interface FeatureTranslation {
   id: number;
-  feature_id: number;
+  feature_id?: number;
   name: string;
   language_code: string;
-  created_at: string;
+  created_at?: string;
   feature_name?: string;
 }
 
@@ -69,6 +101,7 @@ export interface Group {
   title: string;
   group_language_code?:string;
   fields: GroupField[]
+  translations: GroupTranslation[]
 }
 
 export interface GroupField {
@@ -83,8 +116,9 @@ export interface GroupField {
   localizable: boolean;
   language_code: string;
   created_at: string;
-  value?:any  
-
+  value?:any;
+  translations?: { name: string }[];
+  [key: string]: any; 
 }
 
 export interface GroupTranslationField {

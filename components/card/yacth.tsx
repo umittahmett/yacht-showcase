@@ -69,7 +69,7 @@ const Yacth = ({
           </div>
         </div>
 
-        <p className="text-text-color leading-1.6">{about}</p>
+        <p className="text-text-color leading-1.6 line-clamp-3">{about}</p>
 
         <div className="flex items-center justify-between gap-2.5">
           {dailyPrice !== undefined && dailyPrice !== null ? (
