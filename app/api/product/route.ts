@@ -1,167 +1,139 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
+import { Group, GroupField, PricingFeatureField, PricingType, ProductFeature, ProductFeatureField } from '@/types/product'
+import { getProductData } from '@/app/dashboard/product/actions'
 
 export async function GET(request: Request) {
-  const url = new URL(request.url)
-  const idParam = url.searchParams.get('id')
-  const productId = idParam ? Number(idParam) : undefined
+  const { searchParams } = new URL(request.url)
+  const productId = searchParams.get('id')
 
   if (!productId || Number.isNaN(productId)) {
     return NextResponse.json({ error: 'Missing or invalid id' }, { status: 400 })
   }
 
   try {
-    const supabase = await createClient()
+    let productData: any = null;
 
-    // Fetch base product
-    const { data: product, error: productError } = await supabase
-      .from('products')
-      .select('*')
-      .eq('id', productId)
-      .single()
+    const supabase = await createClient();  
+    productData = await getProductData(Number(productId))
+    
+    const {data: features, error: featuresError} = await supabase.from(`features_translations`).select("id, feature_name, name, language_code").eq("language_code", "en")
 
-    if (productError || !product) {
-      return NextResponse.json({ error: 'Product not found' }, { status: 404 })
+    if (featuresError) {
+      throw new Error('Error fetching features');
     }
 
-    const [
-      { data: baseInfos },
-      { data: technicalInfos },
-      { data: generalInfos },
-      { data: cabinInfos },
-      { data: servicesInfos },
-      { data: waterSportsInfos },
-      { data: pricingTypes },
-    ] = await Promise.all([
-      supabase.from('base_informations').select('*'),
-      supabase.from('technical_specifications').select('*'),
-      supabase.from('general_features').select('*'),
-      supabase.from('cabin_details').select('*'),
-      supabase.from('services').select('*'),
-      supabase.from('water_sports').select('*'),
-      supabase.from('pricing_types').select('*'),
-    ])
+    let groups: any[] = (await Promise.all(
+      features.map(async (feature) => {
+        const { data, error } = await supabase.from(feature.feature_name!).select(`
+          id, 
+          field_name, 
+          ${feature.feature_name}_translations( name ) as translations
+        `);
 
-    // Find daily pricing type
-    const dailyTypeId: number | undefined = pricingTypes?.find(
-      (pt: any) => String(pt?.field_name ?? '').toLowerCase() === 'daily_prices'
-    )?.id
+        if (error) {
+          console.error("Error fetching fields:", error);
+          return [];
+        }
 
-    // Product feature rows
-    const [
-      { data: pbi },
-      { data: pts },
-      { data: pgs },
-      { data: pcd },
-      { data: psr },
-      { data: pws },
-      { data: ptr },
-    ] = await Promise.all([
-      supabase
-        .from('product_base_informations')
-        .select('*')
-        .eq('product_id', productId),
-      supabase
-        .from('product_technical_specifications')
-        .select('*')
-        .eq('product_id', productId),
-      supabase
-        .from('product_general_features')
-        .select('*')
-        .eq('product_id', productId),
-      supabase
-        .from('product_cabin_details')
-        .select('*')
-        .eq('product_id', productId),
-      supabase
-        .from('product_services')
-        .select('*')
-        .eq('product_id', productId),
-      supabase
-        .from('product_water_sports')
-        .select('*')
-        .eq('product_id', productId),
-      supabase
-        .from('product_pricing')
-        .select('*')
-        .eq('product_id', productId),
-    ])
+        return {
+          name: feature.feature_name,
+          title: feature.name,
+          fields: data.map((field: any) => { 
+            return { 
+              id: field.id,
+              name: field.field_name,
+              title: field[`${feature.feature_name}_translations`][0]?.name ?? field.field_name,
+              value: field.value
+            } 
+          }),
+        };
+      })
+    )) as any[];
 
-    // Merge fields by definition field_name into group buckets
-    const base_informations: Record<string, any> = {}
-    const technical_specifications: Record<string, any> = {}
-    const general_features: Record<string, any> = {}
-    const cabin_details: Record<string, any> = {}
-    const services: Record<string, any> = {}
-    const water_sports: Record<string, any> = {}
+    const { data: pricingPeriods, error: pricingPeriodsError } = await supabase.from('pricing_periods').select(`
+      id, 
+      field_name,
+      pricing_periods_translations( name, language_code ) 
+    `).eq('pricing_periods_translations.language_code', 'en')
 
-    pbi?.forEach((row: any) => {
-      const def = baseInfos?.find((f: any) => f.id === row.feature_id)
-      if (def?.field_name) base_informations[def.field_name] = row.value
-    })
-    
-    pts?.forEach((row: any) => {
-      const def = technicalInfos?.find((f: any) => f.id === row.feature_id)
-      if (def?.field_name) technical_specifications[def.field_name] = row.value
+    const { data: pricingTypes, error: pricingTypesError } = await supabase.from('pricing_types').select(`
+      id, 
+      field_name,
+      pricing_types_translations( name, language_code ) 
+    `).eq('pricing_types_translations.language_code', 'en');
+
+    if (pricingPeriodsError || pricingTypesError) { throw new Error('Error fetching pricing data') }
+
+    let pricingData: Group[] | any = pricingTypes.map((pricingType: PricingType) => {
+      return {
+        id: pricingType.id,
+        name: pricingType.field_name,
+        title: pricingType.pricing_types_translations?.[0]?.name ?? pricingType.field_name,
+        fields: pricingPeriods
+      }
     })
 
-    pgs?.forEach((row: any) => {
-      const def = generalInfos?.find((f: any) => f.id === row.feature_id)
-      if (def?.field_name) general_features[def.field_name] = row.value
-    })
+    if (productData) {
+      groups = groups.map((group: Group) => {
+        const groupFeatures = productData.features.find((feature: ProductFeature) => feature.name === group.name);
+        return {
+          ...group,
+          fields: group.fields.map((field: GroupField) => {
+            const feature = groupFeatures?.fields.find((feature: ProductFeatureField) => feature.feature_id === field.id);
+            return {
+              ...field,
+              value: feature?.value,
+            };
+          }),
+        };
+      });
+    }
 
-    pcd?.forEach((row: any) => {
-      const def = cabinInfos?.find((f: any) => f.id === row.feature_id)
-      if (def?.field_name) cabin_details[def.field_name] = row.value
-    })
-    
-    psr?.forEach((row: any) => {
-      const def = servicesInfos?.find((f: any) => f.id === row.feature_id)
-      if (def?.field_name) services[def.field_name] = row.value
-    })
-    
-    pws?.forEach((row: any) => {
-      const def = waterSportsInfos?.find((f: any) => f.id === row.feature_id)
-      if (def?.field_name) water_sports[def.field_name] = row.value
-    })
-    
-    // Compute daily price
-    let dailyPrice: number | undefined = undefined
-    if (ptr && dailyTypeId) {
-      const dailyRows = ptr.filter((row: any) => row.pricing_type_id === dailyTypeId)
-      if (dailyRows.length) {
-        const values = dailyRows
-          .map((r: any) => Number(r.value))
-          .filter((v: any) => !Number.isNaN(v))
-        if (values.length) dailyPrice = Math.min(...values)
+    if (productData) {
+      const pricingFeature = productData.features.find((feature: ProductFeature) => feature.name === 'pricing');
+
+      if (pricingFeature) {
+        const pricingFeatures: PricingFeatureField[] | any = pricingFeature.fields;
+
+        pricingData = pricingData.map((pricingType: Group) => {
+          const pricingTypeData: PricingFeatureField[] | any = pricingFeatures.filter((field: PricingFeatureField) => field.pricing_type_id === pricingType.id);
+          return {
+            name: pricingType.name,
+            title: pricingType.title,
+            fields: pricingType.fields.map((field) => {
+              const pricingPeriod = pricingTypeData.find((period: PricingFeatureField) => period.pricing_period_id === field.id);
+              return {
+                title: field.pricing_periods_translations?.[0]?.name || field.field_name,
+                value: pricingPeriod?.value,
+              }
+            }),
+          }
+        });
       }
     }
 
-    const image = Array.isArray(product.images) && product.images.length ? product.images[0] : undefined
     const data = {
-      product: {
-        id: product.id,
-        images: product.images ?? [],
-        coverImage: image,
-        status: product.status,
-        created_at: product.created_at,
-        base_informations,
-        technical_specifications,
-        general_features,
-        cabin_details,
-        services,
-        water_sports,
-        pricing: {
-          dailyPrice,
-          rows: ptr ?? [],
-        },
-      },
+      id: productId,
+      title: groups.find((group: Group) => group.name === 'base_informations').fields.find((field: GroupField) => field.name === 'name').value,
+      images: productData.images,
+      status: productData.status,
+      created_at: productData.created_at,
+      features: groups.map((group: Group) => {
+        if (group.name === 'base_informations') {
+          return {
+            ...group,
+            fields: group.fields.filter((field: GroupField) => field.name !== 'name')
+          };
+        }
+        return group;
+      }),
+      pricing: pricingData
     }
-    
-    return NextResponse.json({data}, { status: 200 })
+
+    return NextResponse.json(data, { status: 200 })
+
   } catch (e) {
     return NextResponse.json({ error: 'Unexpected error', message: String(e) }, { status: 500 })
   }
 }
-
-
