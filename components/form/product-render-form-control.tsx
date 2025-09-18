@@ -23,7 +23,6 @@ export function productRenderFormControl(
       return (
         <div data-color-mode="light">
           <MDEditor
-            className="!min-h-80"
             aria-disabled={field.disabled}
             value={field.value || ""}
             onChange={field.onChange}
