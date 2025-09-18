@@ -132,7 +132,7 @@ const FilterContent = ({ filters, priceRange, setPriceRange, maxPrice, appliedFi
 );
 
 export default function BoatFilters({ onFiltersChange, className, initialFilters }: BoatFiltersProps) {
-  const [filters, setFilters] = useState<FilterItem[]>(initialFilters as FilterItem[] );
+  const [filters] = useState<FilterItem[]>(initialFilters as FilterItem[] );
   const maxPrice = (filters?.find(f => f.id === 'price-range')?.items as { max: number })?.max || 1000000;
   const [priceRange, setPriceRange] = useState([0, maxPrice]);
   const [debouncedValue] = useDebounce(priceRange, 300);
@@ -157,7 +157,8 @@ export default function BoatFilters({ onFiltersChange, className, initialFilters
       }
       
       if (newValues.length === 0) {
-        const { [filterId]: removed, ...rest } = prev;
+        const rest = { ...prev };
+        delete rest[filterId];
         return rest;
       }
 

@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react';
+import type { CSSProperties } from 'react';
+
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -16,6 +18,7 @@ import Image from 'next/image';
 import { DetailedProduct, ProductFeatureGroup } from '@/types/product';
 import MDEditor from '@uiw/react-md-editor';
 import Share from '@/components/ui/share';
+import type { Swiper as SwiperClass } from 'swiper/types';
 
 // Feature Display Components
 const FeatureCard: React.FC<{ feature: ProductFeatureGroup }> = ({ feature }) => {
@@ -110,9 +113,14 @@ const FeatureCard: React.FC<{ feature: ProductFeatureGroup }> = ({ feature }) =>
   );
 };
 
+type SwiperCSSVars = CSSProperties & {
+  ['--swiper-navigation-color']?: string;
+  ['--swiper-pagination-color']?: string;
+};
+
 const ProductDetails: React.FC<{ product: DetailedProduct }> = ({ product }) => {
 
-  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
 
   return (
     <div className='container py-10'>
@@ -123,10 +131,12 @@ const ProductDetails: React.FC<{ product: DetailedProduct }> = ({ product }) => 
 
       <div className='rounded-2xl overflow-clip space-y-0.5 mb-10'>
         <Swiper
-          style={{
-            '--swiper-navigation-color': '#fff',
-            '--swiper-pagination-color': '#fff',
-          }}
+          style={
+            {
+              '--swiper-navigation-color': '#fff',
+              '--swiper-pagination-color': '#fff',
+            } as SwiperCSSVars
+          }
           loop={true}
           spaceBetween={0}
           navigation={true}
