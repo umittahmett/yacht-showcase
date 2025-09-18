@@ -14,7 +14,7 @@ export default async function ProductsDetailPage({
   let data:any;
 
   try {
-    const res = await fetch(`http://localhost:3000/api/product?id=${id}`)
+    const res = await fetch(`/api/product?id=${id}`)
     data = await res.json()
     console.log("data", data)
   } catch (e) {
