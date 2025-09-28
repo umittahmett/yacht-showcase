@@ -14,7 +14,7 @@ export default async function ProductsDetailPage({
   let data:any;
 
   try {
-    const res = await fetch(`/api/product?id=${id}`)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/product?id=${id}`)
     data = await res.json()
     console.log("data", data)
   } catch (e) {

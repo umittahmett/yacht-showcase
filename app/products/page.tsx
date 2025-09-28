@@ -21,7 +21,7 @@ const ProductsPage = () => {
     const controller = new AbortController();
     const getProducts = async () => {
       try {
-        const res = await fetch(`/api/products${searchParams.get('q') ? `?q=${searchParams.get('q')}` : ''}`, { signal: controller.signal });
+        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/products${searchParams.get('q') ? `?q=${searchParams.get('q')}` : ''}`, { signal: controller.signal });
         const { data, filters } = await res.json();
         setItems(data);
         setFilteredItems(data);
