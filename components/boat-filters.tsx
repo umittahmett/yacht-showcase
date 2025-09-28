@@ -27,6 +27,8 @@ interface BoatFiltersProps {
   onFiltersChange?: (filters: Record<string, any>) => void;
   className?: string;
   initialFilters?: FilterItem[];
+  keyword?: string;
+  setKeyword?: (keyword: string) => void;
 }
 
 const FilterContent = ({ filters, priceRange, setPriceRange, maxPrice, appliedFilters, handleFilterChange, clearAllFilters }: {
@@ -57,7 +59,7 @@ const FilterContent = ({ filters, priceRange, setPriceRange, maxPrice, appliedFi
       >
         {filters?.map((filterItem, index) => (
           <AccordionItem
-            key={index}
+            key={`${filterItem.id}-${index}`}
             value={filterItem.id}
             className="border-b border-gray-300"
           >
@@ -100,8 +102,8 @@ const FilterContent = ({ filters, priceRange, setPriceRange, maxPrice, appliedFi
                     </div>
                   </div>
                 ) : ( 
-                  Array.isArray(filterItem.items) && filterItem.items.map((item) => (
-                    <div key={item.id} className="flex items-center space-x-2 cursor-pointer">
+                  Array.isArray(filterItem.items) && filterItem.items.map((item,fieldIndex) => (
+                    <div key={`${item.id}-${fieldIndex}`} className="flex items-center space-x-2 cursor-pointer">
                       <Checkbox
                         className='max-lg:size-5 !cursor-pointer'
                         id={item.id}
@@ -131,16 +133,17 @@ const FilterContent = ({ filters, priceRange, setPriceRange, maxPrice, appliedFi
     </div>
 );
 
-export default function BoatFilters({ onFiltersChange, className, initialFilters }: BoatFiltersProps) {
+export default function BoatFilters({ onFiltersChange, className, initialFilters, keyword, setKeyword }: BoatFiltersProps) {
   const [filters] = useState<FilterItem[]>(initialFilters as FilterItem[] );
   const maxPrice = (filters?.find(f => f.id === 'price-range')?.items as { max: number })?.max || 1000000;
   const [priceRange, setPriceRange] = useState([0, maxPrice]);
-  const [debouncedValue] = useDebounce(priceRange, 300);
+  const [debouncedPriceRange] = useDebounce(priceRange, 300);
   const [appliedFilters, setAppliedFilters] = useState<Record<string, any>>({});
 
   const clearAllFilters = () => {
     setAppliedFilters({});
     setPriceRange([0, maxPrice]);
+    setKeyword('');
     onFiltersChange?.({});
   };
 
@@ -176,10 +179,11 @@ export default function BoatFilters({ onFiltersChange, className, initialFilters
   useEffect(() => {
     const finalFilters = {
       ...appliedFilters,
-      'price-range': debouncedValue
+      'price-range': debouncedPriceRange,
+      'keyword': keyword
     };
     onFiltersChange?.(finalFilters);
-  }, [appliedFilters, debouncedValue]);
+  }, [appliedFilters, debouncedPriceRange, keyword]);
 
   return (
     <div>
