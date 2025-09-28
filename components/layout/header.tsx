@@ -40,7 +40,6 @@ const Header = () => {
             <Link
               key={link.name}
               href={link.href}
-              prefetch={false}
               className={clsx("font-[Unna] text-dynamic-base tracking-wide uppercase leading-1.1 hover:text-accent-500 duration-200", {
                 "text-accent-500 font-bold": link.href === pathname
               })}
@@ -83,7 +82,6 @@ const Header = () => {
                   <Link
                     key={link.name}
                     href={link.href}
-                    prefetch={false}
                     onClick={() => setIsOpen(false)}
                     className="font-[Unna] stracking-tight uppercase leading-1.1 hover:text-secondary-500 duration-200 text-dynamic-lg"
                   >
