@@ -18,7 +18,7 @@ const Share: React.FC = () => {
         .share({
           title: "Denizde 1 Hafta",
           text: "Yat kiralama sitesi üzerinden bir ürün paylaşılıyor.",
-          url: `${process.env.NEXT_PUBLIC_BASE_URL}${pathName}`,
+          url: `${process.env.NEXT_PUBLIC_APP_URL}${pathName}`,
         })
         .then(() => {
           setSharePopupSupport(true);
@@ -41,7 +41,7 @@ const Share: React.FC = () => {
 
   const handleCopy = () => {
     navigator.clipboard
-      .writeText(`${process.env.NEXT_PUBLIC_BASE_URL}${pathName}`)
+      .writeText(`${process.env.NEXT_PUBLIC_APP_URL}${pathName}`)
       .then(() => {
         setCopied(true);
         setTimeout(() => setCopied(false), 1000);
@@ -76,14 +76,14 @@ const Share: React.FC = () => {
                 {/* Social Media Icons */}
                 <div className="flex items-center justify-center space-x-2 *:cursor-pointer *:duration-200 *:size-12 *:rounded-full *:flex *:items-center *:justify-center *:text-white">
                   <button 
-                    onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`${process.env.NEXT_PUBLIC_BASE_URL}${pathName}`)}`, '_blank')}
+                    onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`${process.env.NEXT_PUBLIC_APP_URL}${pathName}`)}`, '_blank')}
                     className="bg-blue-500 hover:bg-blue-600"
                   >
                     <IconBrandFacebook />
                   </button>
                   
                   <button 
-                    onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(`${process.env.NEXT_PUBLIC_BASE_URL}${pathName}`)}`, '_blank')}
+                    onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(`${process.env.NEXT_PUBLIC_APP_URL}${pathName}`)}`, '_blank')}
                     className="bg-black hover:bg-black/80"
                   >
                    <IconBrandX />
@@ -97,14 +97,14 @@ const Share: React.FC = () => {
                   </button>
                   
                   <button 
-                    onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(`${process.env.NEXT_PUBLIC_BASE_URL}${pathName}`)}`, '_blank')}
+                    onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(`${process.env.NEXT_PUBLIC_APP_URL}${pathName}`)}`, '_blank')}
                     className="bg-green-500 hover:bg-green-600"
                   >
                    <IconBrandWhatsapp />
                   </button>
                   
                   <button 
-                    onClick={() => window.open(`https://t.me/share/url?url=${encodeURIComponent(`${process.env.NEXT_PUBLIC_BASE_URL}${pathName}`)}`, '_blank')}
+                    onClick={() => window.open(`https://t.me/share/url?url=${encodeURIComponent(`${process.env.NEXT_PUBLIC_APP_URL}${pathName}`)}`, '_blank')}
                     className="bg-sky-500 hover:bg-sky-600"
                   >
                    <IconBrandTelegram />
@@ -119,7 +119,7 @@ const Share: React.FC = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                   </svg>
                   <input 
-                    value={`${process.env.NEXT_PUBLIC_BASE_URL}${pathName}`} 
+                    value={`${process.env.NEXT_PUBLIC_APP_URL}${pathName}`} 
                     readOnly
                     className="flex-1 bg-transparent text-sm text-gray-600 focus:outline-none"
                   />
