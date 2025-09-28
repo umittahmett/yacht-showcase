@@ -1,6 +1,7 @@
-import { IconBrandInstagram, IconBrandX } from '@tabler/icons-react';
 import { Mail, Phone } from 'lucide-react';
 import Link from 'next/link'
+import InstagramIcon from '@assets/brand/instagram.svg';
+import XIcon from '@assets/brand/x.svg';
 
 const Banner = () => {
   return (
@@ -11,7 +12,7 @@ const Banner = () => {
             href="/"
             className="flex items-center gap-1.5 text-white hover:text-white/90 duration-200 text-xs md:text-sm leading-1.4"
           >
-            <IconBrandInstagram className='max-md:w-4' />
+            <InstagramIcon className='max-md:w-4' />
             official.denizdebirhafta
           </Link>
 
@@ -19,7 +20,7 @@ const Banner = () => {
             href="/"
             className="flex items-center gap-1.5 text-white hover:text-white/90 duration-200 text-xs md:text-sm leading-1.4"
           >
-            <IconBrandX className='max-md:w-4' />
+            <XIcon className='max-md:w-4' />
             denizdebirhafta
           </Link>
         </div>

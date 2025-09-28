@@ -18,7 +18,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { createProduct, deleteProducts, updateProduct } from "@/app/dashboard/product/actions";
 import { productRenderFormControl } from "./product-render-form-control";
-import { buildSchemaFromFields, generateDefaultValues } from "@/lib/validation/schema-utils";
+import { buildSchemaFromFields, generateDefaultValues } from "@/utils/schema-utils";
 import { FileUpload } from "../ui/file-upload";
 import { z } from "zod";
 import { Language } from "@/types";

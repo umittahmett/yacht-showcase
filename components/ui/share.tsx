@@ -1,12 +1,23 @@
 "use client";
+// Core
 import { useEffect, useState } from "react";
-import clsx from "clsx";
-import { Share2Icon } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger } from "./dropdown-menu";
-import { Button } from "./button";
-import { IconBrandFacebook, IconBrandInstagram, IconBrandTelegram, IconBrandWhatsapp, IconBrandX } from "@tabler/icons-react";
 import { usePathname } from "next/navigation";
 
+// Third Party
+import clsx from "clsx";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger } from "./dropdown-menu";
+
+// Components
+import { Button } from "./button";
+
+// Icons
+import { Share2Icon } from "lucide-react";
+import FacebookIcon from '@assets/brand/facebook.svg'
+import InstagramIcon from '@assets/brand/instagram.svg'
+import TelegramIcon from '@assets/brand/telegram.svg'
+import TwitterIcon from '@assets/brand/x.svg'
+import WhatsappIcon from '@assets/brand/whatsapp.svg'
+import Image from "next/image";
 
 const Share: React.FC = () => {
   const [sharePopupSupport, setSharePopupSupport] = useState<boolean>(false);
@@ -79,35 +90,35 @@ const Share: React.FC = () => {
                     onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`${process.env.NEXT_PUBLIC_APP_URL}${pathName}`)}`, '_blank')}
                     className="bg-blue-500 hover:bg-blue-600"
                   >
-                    <IconBrandFacebook />
+                    <Image src={FacebookIcon.src} alt="Facebook" width={24} height={24} />
                   </button>
                   
                   <button 
                     onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(`${process.env.NEXT_PUBLIC_APP_URL}${pathName}`)}`, '_blank')}
                     className="bg-black hover:bg-black/80"
                   >
-                   <IconBrandX />
+                   <Image src={TwitterIcon.src} alt="Twitter" width={24} height={24} />
                   </button>
                   
                   <button 
                     onClick={() => window.open(`https://www.instagram.com`, '_blank')}
                     className="bg-pink-600 hover:bg-pink-700"
                   >
-                   <IconBrandInstagram />
+                   <Image src={InstagramIcon.src} alt="Instagram" width={24} height={24} />
                   </button>
                   
                   <button 
                     onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(`${process.env.NEXT_PUBLIC_APP_URL}${pathName}`)}`, '_blank')}
                     className="bg-green-500 hover:bg-green-600"
                   >
-                   <IconBrandWhatsapp />
+                   <Image src={WhatsappIcon.src} alt="Whatsapp" width={24} height={24} />
                   </button>
                   
                   <button 
                     onClick={() => window.open(`https://t.me/share/url?url=${encodeURIComponent(`${process.env.NEXT_PUBLIC_APP_URL}${pathName}`)}`, '_blank')}
                     className="bg-sky-500 hover:bg-sky-600"
                   >
-                   <IconBrandTelegram />
+                   <Image src={TelegramIcon.src} alt="Telegram" width={24} height={24} />
                   </button>
                 </div>
               </div>

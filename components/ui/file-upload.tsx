@@ -1,10 +1,9 @@
 import { cn } from "@/lib/utils";
 import { useRef, useState } from "react";
 import { motion } from "motion/react";
-import { IconUpload } from "@tabler/icons-react";
 import { useDropzone } from "react-dropzone";
 import { Button } from "./button";
-import { X } from "lucide-react";
+import { UploadIcon, X } from "lucide-react";
 
 const mainVariant = {
   initial: {
@@ -170,10 +169,10 @@ export const FileUpload = ({ onChange, value = [] }: FileUploadProps) => {
                     className="text-neutral-600 flex flex-col items-center"
                   >
                     Drop it
-                    <IconUpload className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
+                    <UploadIcon className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
                   </motion.p>
                 ) : (
-                  <IconUpload className="h-4 w-4 text-neutral-600 dark:text-neutral-300" />
+                  <UploadIcon className="h-4 w-4 text-neutral-600 dark:text-neutral-300" />
                 )}
               </motion.div>
             )}

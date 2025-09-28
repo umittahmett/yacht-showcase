@@ -19,16 +19,16 @@ import {
 } from '@/components/ui/sheet';
 import { FilterIcon, Trash2 } from 'lucide-react';
 import { FilterItem } from '@/types';
-import { DualRangeSlider } from './ui/dual-range-slider';
+import { DualRangeSlider } from '../../../components/ui/dual-range-slider';
 import { useDebounce } from 'use-debounce';
-import { Input } from './ui/input';
+import { Input } from '../../../components/ui/input';
 
 interface BoatFiltersProps {
   onFiltersChange?: (filters: Record<string, any>) => void;
   className?: string;
   initialFilters?: FilterItem[];
   keyword?: string;
-  setKeyword?: (keyword: string) => void;
+  setKeyword: (keyword: string) => void;
 }
 
 const FilterContent = ({ filters, priceRange, setPriceRange, maxPrice, appliedFilters, handleFilterChange, clearAllFilters }: {

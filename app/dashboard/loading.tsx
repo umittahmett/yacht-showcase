@@ -1,4 +1,4 @@
-import LoadingAnimation from "@/components/loading-animation";
+import LoadingAnimation from "@/components/shared/loading-animation";
 
 const Loading = () => {
   return <LoadingAnimation />;

@@ -1,10 +1,10 @@
 "use client";
 
 // hooks
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 // components
-import BoatFilters from "@/components/boat-filters";
+import BoatFilters from "@/app/products/_components/filters";
 import Yacth from "@/components/card/yacth";
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
