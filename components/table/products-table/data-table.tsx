@@ -46,14 +46,12 @@ export function DataTable<TData, TValue>({
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([])
 
   useEffect(() => { 
-    console.log(rowSelection);
     const productIds = Object.keys(rowSelection).map(rowIndex => {
       const row = table.getRowModel().rows[parseInt(rowIndex)];
       return (row.original as { id: number | string }).id;
     });
 
     setSelectedProductIds(productIds as string[])
-    console.log('Selected Product IDs:', productIds);
   },[rowSelection])
 
   const table = useReactTable({
