@@ -4,9 +4,10 @@ import { ColumnDef } from "@tanstack/react-table"
 export type Product = {
   id: number
   images: string[]
-  base_informations?: {
+  product_base_informations?: {
     id: number
     field_name: string
+    feature_id: number
     value: string
     language_code: string
   }[]
@@ -95,7 +96,9 @@ export const columns: ColumnDef<Product>[] = [
     },
     cell: ({ row }) => {
       const product = row.original
-      const productName = product.base_informations?.[0]?.value
+      const productName = product.product_base_informations?.find((base_info)=>{
+        return base_info.feature_id === 3
+      })?.value
 
       return <span className="truncate">{productName}</span>
     },
