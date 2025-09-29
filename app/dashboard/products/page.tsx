@@ -7,9 +7,18 @@ import Link from "next/link"
 export default async function Products() {
 
   let data;
-  
+  const apiKey = process.env.NEXT_API_KEY;
+
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/dashboard/products`)
+    if (!apiKey) {
+      throw new Error('API key not found');
+    }
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/dashboard/products`,{
+      headers:{
+        'api-key': apiKey
+      }
+    })
     const responseData = await response.json()
     data = responseData.data || []
     console.log('Fetched products:', data)
