@@ -5,7 +5,7 @@ import React, { useState } from "react";
 
 // components
 import BoatFilters from "@/app/products/_components/filters";
-import Yacth from "@/components/card/yacth";
+import ProductCard from "@/components/card/product-card";
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
@@ -90,7 +90,7 @@ const ProductsPage:React.FC<{products: any[], filters: any}> = ({products, filte
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {filteredItems.length > 0 ? filteredItems.map((p: any, index: number) => (
-                <Yacth
+                <ProductCard
                   key={`${p.id}-${index}`}
                   id={p.id}
                   image={p.image}

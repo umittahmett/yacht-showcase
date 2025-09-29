@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from '../ui/button';
 import Link from 'next/link';
-import Yacth from '../card/yacth';
+import ProductCard from '../card/product-card';
 
 const FeaturedYacth = () => {
   return (
@@ -15,9 +15,9 @@ const FeaturedYacth = () => {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6 mt-8 sm:mt-12 lg:mt-16">
-          <Yacth />
-          <Yacth />
-          <Yacth />
+          <ProductCard />
+          <ProductCard />
+          <ProductCard />
         </div>
       </div>
     </section>
