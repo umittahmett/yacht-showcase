@@ -5,6 +5,7 @@ export default async function ProductsDetailPage({
 }: {
   params: Promise<{ slug?: string[] }>;
 }) {
+
   const { slug } = await params;
   const id = slug && slug.length ? Number(slug) : undefined;
   if (!id || Number.isNaN(id)) {
@@ -12,15 +13,22 @@ export default async function ProductsDetailPage({
   }
 
   let data:any;
-
+  const apiKey = process.env.NEXT_API_KEY;
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/product?id=${id}`)
+    if (!apiKey) {
+      throw new Error('API key not found');
+    }
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/public/products/${id}`,{
+      headers:{
+        'api-key' : apiKey
+      }
+    })
     data = await res.json()
     console.log("data", data)
   } catch (e) {
     console.log("Error fetching product: ", e)
   }
-
 
   if (!data) {
     return <div className="container py-10">Product not found</div>;

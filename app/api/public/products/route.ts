@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
 import { FilterItem } from '@/types';
 
+/**
+ * Get Products
+ * http://app-url.com/api/products
+ */
 export async function GET(request: Request) {
   const url = new URL(request.url)
   const q = url.searchParams.get('q')

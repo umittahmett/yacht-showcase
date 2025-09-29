@@ -3,11 +3,14 @@ import { createClient } from '@/utils/supabase/server'
 import { Group, GroupField, PricingFeatureField, PricingType, ProductFeature, ProductFeatureField } from '@/types/product'
 import { getProductData } from '@/app/dashboard/product/actions'
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url)
-  const productId = searchParams.get('id')
+/**
+ * Get Product
+ * http://app-url.com/api/public/products/[id]
+ */
+export async function GET(request: Request,{ params }: { params: { id: string } }) {
+  const { id } = params
 
-  if (!productId || Number.isNaN(productId)) {
+  if (!id || Number.isNaN(id)) {
     return NextResponse.json({ error: 'Missing or invalid id' }, { status: 400 })
   }
 
@@ -15,7 +18,7 @@ export async function GET(request: Request) {
     let productData: any = null;
 
     const supabase = await createClient();  
-    productData = await getProductData(Number(productId))
+    productData = await getProductData(Number(id))
     
     const {data: features, error: featuresError} = await supabase.from(`features_translations`).select("id, feature_name, name, language_code").eq("language_code", "en")
 
@@ -114,7 +117,7 @@ export async function GET(request: Request) {
     }
 
     const data = {
-      id: productId,
+      id: id,
       title: groups.find((group: Group) => group.name === 'base_informations').fields.find((field: GroupField) => field.name === 'name').value,
       images: productData.images,
       status: productData.status,
