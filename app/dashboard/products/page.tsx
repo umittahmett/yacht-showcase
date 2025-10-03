@@ -31,7 +31,7 @@ export default async function Products() {
     <div className="container mx-auto pb-10">
       <div className="flex items-center justify-between w-full my-5">
         <h1 className="section-title">Products</h1>
-          <Link href="/dashboard/product" >
+          <Link href="/dashboard/products/new" >
             <Button>
                 Create
               <Plus />

@@ -26,7 +26,7 @@ import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { ChevronDown, Search } from "lucide-react"
-import { deleteProducts } from "@/app/dashboard/product/actions"
+import { deleteProducts } from "@/app/dashboard/products/actions"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 
 interface DataTableProps<TData, TValue> {

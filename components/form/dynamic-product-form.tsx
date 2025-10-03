@@ -16,7 +16,7 @@ import { toSnakeCase } from "@/utils/text-to-snake-case";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger} from "../ui/alert-dialog";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
-import { createProduct, deleteProducts, updateProduct } from "@/app/dashboard/product/actions";
+import { createProduct, deleteProducts, updateProduct } from "@/app/dashboard/products/actions";
 import { productRenderFormControl } from "./product-render-form-control";
 import { buildSchemaFromFields, generateDefaultValues } from "@/utils/schema-utils";
 import { FileUpload } from "../ui/file-upload";
@@ -203,7 +203,6 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
         await createProduct(formData);
       } else {
         await updateProduct(formData)
-        console.log("images to delete: ", imagesToDelete);
       }
     } catch (error) {
       console.log(error);

@@ -29,7 +29,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import Link from "next/link"
 import Image from "next/image"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
-import { deleteProducts } from "@/app/dashboard/product/actions"
+import { deleteProducts } from "@/app/dashboard/products/actions"
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -71,7 +71,7 @@ export const columns: ColumnDef<Product>[] = [
       const product = row.original
 
       return (
-        <Link href={`/dashboard/product/${product.id}`}>
+        <Link href={`/dashboard/products/${product.id}`}>
           <Image  
             width={40}
             height={40}
@@ -161,7 +161,7 @@ export const columns: ColumnDef<Product>[] = [
               asChild
               onClick={() => console.log("edit product", product.id)}
             >
-              <Link href={`/dashboard/product/${product.id}`}>Details</Link>
+              <Link href={`/dashboard/products/${product.id}`}>Details</Link>
             </DropdownMenuItem>
             <DropdownMenuItem
               asChild
