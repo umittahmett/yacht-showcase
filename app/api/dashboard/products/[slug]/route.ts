@@ -31,9 +31,14 @@ export async function GET(
       const {data: pricingPeriods, error: pricingPeriodsError} = await supabase
         .from('pricing_periods')
         .select('*, pricing_periods_translations(*)');
+
+      const {data: featuresTranslations, error: featuresTranslationsError} = await supabase
+      .from('features_translations')
+      .select('*');
     
       if (pricingTypesError) throw pricingTypesError;
       if (pricingPeriodsError) throw pricingPeriodsError;
+      if (featuresTranslationsError) throw featuresTranslationsError;
 
       const results = await Promise.all(
         featureGroups.map(async (feature) => {
@@ -41,13 +46,14 @@ export async function GET(
             .from(feature)
             .select(`*, ${feature}_translations(*)`);
 
-            if (error) {
-              throw error.message;
-            }
+          if (error) throw error.message;
+
+          console.log('featuresTranslations', featuresTranslations);
+          
           
           return {
             name: feature,
-            title: feature,
+            title: featuresTranslations?.find((translation:any) => translation.feature_name === feature && translation.language_code == 'en')?.name || feature,
             fields: data.map((field:any)=>{
               const keyToRemove = `${feature}_translations`;
               const {[keyToRemove]: featureTranslation, ...rest}:any = field;
@@ -56,9 +62,7 @@ export async function GET(
                 field_title: featureTranslation[0].name || field.field_name,
               };
             }),
-            
           }
-          
         })
       );
     
