@@ -24,7 +24,6 @@ import { CheckCircle, XCircle } from 'lucide-react';
 // Feature Display Components
 const FeatureCard: React.FC<{ feature: ProductFeatureGroup }> = ({ feature }) => {
   const isBaseInformation = feature.name === 'base_informations';
-  const isBooleanFeature = feature.fields.some(field => field.value === 'true' || field.value === 'false');
 
   if (isBaseInformation) {
     return (

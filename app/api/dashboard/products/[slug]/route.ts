@@ -69,11 +69,10 @@ export async function GET(request: Request, { params }: { params: { slug: string
     
       const pricingGroups = pricingTypes?.map(type => {
         const translation = type.pricing_types_translations?.[0];
-        const { pricing_types_translations: _, ...restType } = type;
     
         const fields = pricingPeriods?.map(period => {
           const periodTranslation = period.pricing_periods_translations?.[0];
-          const { pricing_periods_translations: __, ...restPeriod } = period;
+          const { pricing_periods_translations, ...restPeriod } = period;
           
           return {
             ...restPeriod,

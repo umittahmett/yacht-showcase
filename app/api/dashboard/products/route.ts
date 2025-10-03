@@ -186,7 +186,7 @@ export async function DELETE(request: Request) {
 
     await Promise.all(
       productFeatureGroups.map(async (group) => {
-        const { data, error: featuresError } = await supabase
+        const { error: featuresError } = await supabase
           .from(`product_${group.group_name}`)
           .delete()
           .in('product_id', ids);
