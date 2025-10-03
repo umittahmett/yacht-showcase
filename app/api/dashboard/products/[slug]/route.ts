@@ -1,24 +1,19 @@
+import { featureGroups } from '@/lib/constants/server';
 import { deleteImages } from '@/utils/server/delete-images';
 import { transformPricingData } from '@/utils/server/transform-pricing-data';
 import { transformProductFeatures } from '@/utils/server/transform-product-features';
 import { uploadImages } from '@/utils/server/upload-images';
 import { createClient } from '@/utils/supabase/server';
-import { NextResponse } from 'next/server'
-
-const featureGroups = [
-  "base_informations",
-  "general_features",
-  "cabin_details",
-  "services",
-  "technical_specifications",
-  "water_sports",
-];
+import { NextRequest, NextResponse } from 'next/server'
 
 /**
  * Get Product or Feature Fields
  * http://app-url.com/api/dashboard/products/[slug]
  */
-export async function GET(request: Request, { params }: { params: { slug: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ slug: string }> },
+)  {
   const { slug } = await params;
   
   if (!slug) {
@@ -72,7 +67,7 @@ export async function GET(request: Request, { params }: { params: { slug: string
     
         const fields = pricingPeriods?.map(period => {
           const periodTranslation = period.pricing_periods_translations?.[0];
-          const { pricing_periods_translations, ...restPeriod } = period;
+          const { pricing_periods_translations, ...restPeriod } = period; // eslint-disable-line @typescript-eslint/no-unused-vars
           
           return {
             ...restPeriod,
@@ -100,7 +95,7 @@ export async function GET(request: Request, { params }: { params: { slug: string
         pricing_types(*, pricing_types_translations(*)),
         pricing_periods(*, pricing_periods_translations(*))
       ),
-      ${featureGroups.map((group) => `product_${group}(
+      ${featureGroups.map((group:string) => `product_${group}(
         *,
         ${group}(*, ${group}_translations(*))
       )`).join(',')}
@@ -133,7 +128,10 @@ export async function GET(request: Request, { params }: { params: { slug: string
  * http://app-url.com/api/dashboard/products/[slug]
  * body : { data: product data }
  */
-export async function PUT(request: Request,{ params }: { params: { slug: string } }) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ slug: string }> },
+) {
   const { slug } = await params
 
   if (!slug) {

@@ -19,9 +19,10 @@ export default async function Products() {
         'api-key': apiKey
       }
     })
+    
     const responseData = await response.json()
     data = responseData.data || []
-    console.log('Fetched products:', data)
+
   } catch (error) {
     console.error("Error fetching products:", error)
     data = []

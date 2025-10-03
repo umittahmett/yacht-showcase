@@ -15,21 +15,21 @@ import 'swiper/css/thumbs';
 // import required modules
 import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
 import Image from 'next/image';
-import { DetailedProduct, ProductFeatureGroup } from '@/types/product';
+// import { DetailedProduct, ProductFeatureGroup } from '@/types/product';
 import MDEditor from '@uiw/react-md-editor';
 import Share from '@/components/ui/share';
 import type { Swiper as SwiperClass } from 'swiper/types';
 import { CheckCircle, XCircle } from 'lucide-react';
 
 // Feature Display Components
-const FeatureCard: React.FC<{ feature: ProductFeatureGroup }> = ({ feature }) => {
+const FeatureCard: React.FC<{ feature: any }> = ({ feature }) => {
   const isBaseInformation = feature.name === 'base_informations';
 
   if (isBaseInformation) {
     return (
       <div className="space-y-10">
         <div className="space-y-10">
-          {feature.fields.map((field, index) => (
+          {feature.fields.map((field:any, index:any) => (
             <div key={index} className="">
               <h4 className="section-title title-sm">
                 {field.field_title}
@@ -53,7 +53,7 @@ const FeatureCard: React.FC<{ feature: ProductFeatureGroup }> = ({ feature }) =>
       
       {/* Display all fields in a grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {feature.fields.map((field) => {
+        {feature.fields.map((field:any) => {
           const isTrue = field.value === 'true';
           const isFalse = field.value === 'false';
           
@@ -96,7 +96,7 @@ type SwiperCSSVars = CSSProperties & {
   ['--swiper-pagination-color']?: string;
 };
 
-const ProductDetails: React.FC<{ product: DetailedProduct }> = ({ product }) => {
+const ProductDetails: React.FC<{ product: any }> = ({ product }) => {
 
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
 
@@ -148,7 +148,7 @@ const ProductDetails: React.FC<{ product: DetailedProduct }> = ({ product }) => 
 
       {/* Product Features Display */}
       <div className="space-y-10">
-        {product.features.map((feature, index) => (
+        {product.features.map((feature:any, index:any) => (
           <FeatureCard key={`${feature.name}-${index}`} feature={feature} />
         ))}
 
@@ -156,12 +156,12 @@ const ProductDetails: React.FC<{ product: DetailedProduct }> = ({ product }) => 
         <div>
           <h4 className="section-title title-sm mb-2.5">Pricing</h4>
           <div className='grid md:grid-cols-3 gap-6 md:gap-4'>
-            {product.pricing.map((p, index) => (
+            {product.pricing.map((p:any, index:any) => (
               <div key={index}>
                 <h3 className="section-title title-sm text-dynamic-xl mb-2.5">{p.field_title}</h3>
                 <div className='bg-white rounded-xl shadow-sm border border-gray-200/80 divide-y divide-gray-200/80 *:p-4'>
                   {
-                    p.fields.map((field, fieldIndex) => (
+                    p.fields.map((field:any, fieldIndex:any) => (
                       <div
                         key={fieldIndex}
                         className="flex items-center justify-between"

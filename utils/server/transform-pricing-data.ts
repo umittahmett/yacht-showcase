@@ -9,7 +9,7 @@ export const transformPricingData  = (data:any) => {
       grouped[type.id] = {
         id: type.id,
         name: type.field_name,
-        title: type.pricing_types_translations.find(t => t.language_code === "en")?.name || type.field_name,
+        title: type.pricing_types_translations.find((t:any) => t.language_code === "en")?.name || type.field_name,
         group_language_code: "en",
         fields: []
       };
@@ -22,7 +22,7 @@ export const transformPricingData  = (data:any) => {
       field_type: period.field_type,
       required: period.required,
       localizable: period.localizable,
-      field_title: period.pricing_periods_translations.find(t => t.language_code === "en")?.name || period.field_name,
+      field_title: period.pricing_periods_translations.find((t:any) => t.language_code === "en")?.name || period.field_name,
       field_language_code: "en",
       value: item.value ? item.value : null
     });

@@ -1,22 +1,17 @@
+import { featureGroups } from '@/lib/constants/server';
 import { transformPricingData } from '@/utils/server/transform-pricing-data';
 import { transformProductFeatures } from '@/utils/server/transform-product-features';
 import { createClient } from '@/utils/supabase/server'
-import { NextResponse } from 'next/server'
-
-const featureGroups = [
-  "base_informations",
-  "general_features",
-  "cabin_details",
-  "services",
-  "technical_specifications",
-  "water_sports",
-];
+import { NextRequest, NextResponse } from 'next/server'
 
 /**
  * Get Product
  * http://app-url.com/api/public/products/[slug]
  */
-export async function GET(request: Request,{ params }: { params: { slug: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ slug: string }> },
+) {
   const { slug } = await params
 
   if (!slug) {
@@ -55,11 +50,7 @@ export async function GET(request: Request,{ params }: { params: { slug: string 
     const data = {
       title,
       ...transformedProduct,
-      features: transformedProduct.features.map((feature: any) => 
-        feature.name === 'base_informations'
-          ? { ...feature, fields: feature.fields.filter((f: any) => f.field_name !== 'name') }
-          : feature
-      ),
+      features: transformedProduct.features.map((feature: any) => feature.name === 'base_informations' ? { ...feature, fields: feature.fields.filter((f: any) => f.field_name !== 'name') } : feature ),
       pricing: transformedPricing
     };
     

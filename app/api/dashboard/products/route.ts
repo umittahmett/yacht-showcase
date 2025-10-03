@@ -1,17 +1,8 @@
+import { featureGroups } from '@/lib/constants/server';
 import { deleteImages } from '@/utils/server/delete-images'
 import { uploadImages } from '@/utils/server/upload-images';
 import { createClient } from '@/utils/supabase/server'
-import { NextResponse } from 'next/server'
-
-const productFeatureGroups = [
-  { product_feature_name: "product_pricing", group_name: "pricing" },
-  { product_feature_name: "product_base_informations", group_name: "base_informations" },
-  { product_feature_name: "product_general_features", group_name: "general_features" },
-  { product_feature_name: "product_cabin_details", group_name: "cabin_details" },
-  { product_feature_name: "product_services", group_name: "services" },
-  { product_feature_name: "product_technical_specifications", group_name: "technical_specifications" },
-  { product_feature_name: "product_water_sports", group_name: "water_sports" },
-];
+import { NextRequest, NextResponse } from 'next/server'
 
 /**
  * Get Products
@@ -46,11 +37,8 @@ export async function GET() {
  * Get Products
  * http://app-url.com/api/dashboard/products
  */
-export async function POST(request: Request) {
-  const formData = await request.formData();
-  
-  console.log('formdataaaa', formData)
-  
+export async function POST(request: NextRequest) {
+  const formData = await request.formData();  
 
   if (!formData) {
     return NextResponse.json({ data: [], message: 'Invalid form data' }, { status: 400 })
@@ -149,7 +137,7 @@ export async function POST(request: Request) {
  * http://app-url.com/api/dashboard/products
  * body : { ids:['1','2','3'] }
  */
-export async function DELETE(request: Request) {
+export async function DELETE(request: NextRequest) {
   const { ids } = await request.json();
 
   if (!ids || !Array.isArray(ids) || ids.length === 0) {
@@ -185,9 +173,9 @@ export async function DELETE(request: Request) {
     }
 
     await Promise.all(
-      productFeatureGroups.map(async (group) => {
+      featureGroups.map(async (group:string) => {
         const { error: featuresError } = await supabase
-          .from(`product_${group.group_name}`)
+          .from(`product_${group}`)
           .delete()
           .in('product_id', ids);
         
